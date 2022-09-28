@@ -1,0 +1,221 @@
+body {
+  margin: 0;
+}
+
+@font-face {
+  font-family: made-gentle;
+  src: url(../fonts/MADE-Gentle.otf);
+}
+
+@font-face {
+  font-family: satoshi;
+  src: url(../fonts/Satoshi-Regular.otf);
+}
+
+@font-face {
+  font-family: satoshi-medium;
+  src: url(../fonts/Satoshi-Medium.otf);
+}
+
+@font-face {
+  font-family: satoshi-bold;
+  src: url(../fonts/Satoshi-Bold.otf);
+}
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 2fr 8fr;
+  width: 100vw;
+  height: 100vh;
+  color: white;
+  font-family: satoshi;
+}
+
+.nav {
+  display: grid;
+  grid-template-rows: 5fr 5fr 6fr;
+  padding: 0px 50px 0px 50px;
+  background-color: #393e46;
+}
+
+.calendarHeader {
+  height: max-content;
+  display: grid;
+  grid-template-rows: 105px 22px;
+}
+
+.calendarHeaderTitle {
+  display: grid;
+  align-items: end;
+  font-size: 40px;
+  padding-bottom: 10px;
+}
+
+.calendarOptions {
+  display: grid;
+  grid-template-rows: repeat(3, 60px);
+}
+
+.projects {
+  height: max-content;
+}
+
+.calendarToday,
+.calendarWeek,
+.calendarTitle {
+  align-self: center;
+  padding: 10px;
+}
+
+.calendarToday,
+.calendarWeek,
+.calendarTitle,
+.project {
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.calendarToday:hover,
+.calendarWeek:hover,
+.calendarTitle:hover,
+.project:hover {
+  background-color: #222831;
+  border-radius: 5px;
+}
+
+.projects {
+  display: grid;
+}
+
+.projectsHeader {
+  display: grid;
+  grid-template-rows: 105px 22px;
+}
+
+.projectsTopLine {
+  display: grid;
+  grid-template-columns: 8fr 2fr;
+  align-items: end;
+  gap: 10px;
+  padding-bottom: 10px;
+}
+
+.projectsTitle {
+  font-size: 40px;
+}
+
+.editProjects {
+  cursor: pointer;
+  padding-bottom: 5px;
+  align-self: end;
+  padding-bottom: 10px;
+}
+
+.editProjects:hover {
+  text-decoration: underline;
+}
+
+.addProject {
+  font-size: 20px;
+  width: max-content;
+  height: max-content;
+  cursor: pointer;
+}
+
+.projectOptions {
+  display: grid;
+  grid-template-rows: repeat(3, 60px);
+  padding-top: 10px;
+}
+
+.project {
+  display: grid;
+  align-self: center;
+  padding: 10px;
+}
+
+.content {
+  display: grid;
+  grid-template-rows: 105px 22px 48px auto;
+  background-color: #222831;
+  padding: 0px 50px 0px 50px;
+}
+
+.header {
+  display: grid;
+  grid-template-rows: 60px 60px;
+}
+
+.headerTitle {
+  font-size: 40px;
+  white-space: nowrap;
+}
+
+.headerDescription {
+  font-size: 20px;
+  overflow: scroll;
+  white-space: nowrap;
+}
+
+.contentSeparator {
+  height: 1px;
+  width: 100%;
+  background-color: white;
+}
+
+.addTask {
+  font-size: 20px;
+  width: max-content;
+  height: max-content;
+  cursor: pointer;
+}
+
+.addTask:hover,
+.addProject:hover {
+  text-decoration: underline;
+}
+
+.tasks {
+  display: grid;
+  grid-template-rows: repeat(auto-fill, 75px);
+  gap: 20px;
+}
+
+.task {
+  font-size: 24px;
+  border: 2px solid grey;
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  align-items: center;
+  border-radius: 10px;
+  padding-left: 20px;
+  transition: 0.2s;
+}
+
+.taskCheck {
+  height: 23px;
+  width: 23px;
+  border: 1.5px solid white;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.taskBlack {
+  background-color: rgb(0, 0, 0);
+}
+
+.task:hover {
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.254);
+  transform: scale(1.01);
+}
+
+.nav,
+.content {
+  padding-top: 50px;
+}
+
+.headerTitle,
+.calendarHeaderTitle,
+.projectsTitle {
+  font-family: satoshi-bold;
+}

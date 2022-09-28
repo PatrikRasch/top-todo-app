@@ -5,9 +5,66 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="main.js" defer></script>
+    <link rel="stylesheet" href="styles.css" />
     <title>Document</title>
   </head>
   <body>
-    <div id="content">Hola bola</div>
+    <div id="content"></div>
+
+    <div class="wrapper">
+      <div class="nav">
+        <div class="calendar">
+          <div class="calendarHeader">
+            <div class="calendarHeaderTitle">Plan</div>
+            <div class="contentSeparator"></div>
+          </div>
+          <div class="calendarOptions">
+            <div class="calendarToday">Today</div>
+            <div class="calendarWeek">This Week</div>
+            <div class="calendarTitle">Calendar</div>
+          </div>
+        </div>
+        <div class="projects">
+          <div class="projectsHeader">
+            <div class="projectsTopLine">
+              <div class="projectsTitle">Projects</div>
+              <div class="editProjects">Edit</div>
+            </div>
+            <div class="contentSeparator"></div>
+            <div class="addProject">+ Add Project</div>
+          </div>
+          <div class="projectOptions">
+            <div class="project">Project 1</div>
+            <div class="project">Project 2</div>
+            <div class="project">Project 3</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="header">
+          <div class="headerTitle">Header Title</div>
+          <div class="headerDescription">
+            Header Description which describes our task in great detail.
+          </div>
+        </div>
+        <div class="contentSeparator"></div>
+        <div class="addTask">+ Add Task</div>
+        <div class="tasks">
+          <div class="task taskBlack">
+            <div class="taskCheck"></div>
+            <div class="taskTitle">Task 1</div>
+          </div>
+          <div class="task">
+            <div class="taskCheck"></div>
+            <div class="taskTitle">Task 2</div>
+          </div>
+          <div class="task">
+            <div class="taskCheck"></div>
+            <div class="taskTitle">Task 3</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
