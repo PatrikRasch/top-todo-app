@@ -181,7 +181,7 @@ body {
   gap: 20px;
 }
 
-.task {
+.taskBox {
   font-size: 24px;
   border: 2px solid grey;
   display: grid;
@@ -190,6 +190,12 @@ body {
   border-radius: 10px;
   padding-left: 20px;
   transition: 0.2s;
+  background-color: transparent;
+  color: white;
+}
+
+input {
+  all: unset;
 }
 
 .taskCheck {
@@ -204,7 +210,7 @@ body {
   background-color: rgb(0, 0, 0);
 }
 
-.task:hover {
+.taskBox:hover {
   box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.254);
   transform: scale(1.01);
 }

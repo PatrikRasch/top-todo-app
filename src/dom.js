@@ -117,14 +117,18 @@ export function dom() {
   tasks.classList.add("tasks");
   content.appendChild(tasks);
 
-  const task = document.createElement("div");
-  task.classList.add("task");
-  task.classList.add("taskBlack");
-  tasks.appendChild(task);
+  const taskBox = document.createElement("div");
+  taskBox.classList.add("taskBox");
+  tasks.appendChild(taskBox);
 
   const taskCheck = document.createElement("div");
   taskCheck.classList.add("taskCheck");
-  task.appendChild(taskCheck);
+  taskBox.appendChild(taskCheck);
+
+  const task = document.createElement("input");
+  task.classList.add("task");
+  // task.classList.add("taskBlack");
+  taskBox.appendChild(task);
 
   const taskTitle = document.createElement("div");
   taskTitle.classList.add("taskTitle");
