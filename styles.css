@@ -185,13 +185,19 @@ body {
   font-size: 24px;
   border: 2px solid grey;
   display: grid;
-  grid-template-columns: 50px 1fr;
+  grid-template-columns: 50px 1fr 50px;
   align-items: center;
   border-radius: 10px;
   padding-left: 20px;
   transition: 0.2s;
   background-color: transparent;
   color: white;
+}
+
+.deleteTask {
+  background-image: url("../dist/xIcon.png");
+  width: 30px;
+  cursor: pointer;
 }
 
 input {
