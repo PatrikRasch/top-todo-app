@@ -1,7 +1,7 @@
 import { dom } from "./dom.js";
-import { addTask } from "./addTask.js";
+import { addTask2 } from "./addTask2.js";
 
 dom();
-addTask();
+addTask2();
 
 // addTask();

@@ -115,6 +115,7 @@ export function dom() {
 
   const tasks = document.createElement("div");
   tasks.classList.add("tasks");
+  tasks.dataset.lists;
   content.appendChild(tasks);
 
   // const taskBox = document.createElement("div");
