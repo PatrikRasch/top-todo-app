@@ -33,7 +33,7 @@ body {
 
 .nav {
   display: grid;
-  grid-template-rows: 5fr 5fr 6fr;
+  grid-template-rows: 320px max-content;
   padding: 0px 50px 0px 50px;
   background-color: #393e46;
 }
@@ -57,7 +57,8 @@ body {
 }
 
 .projects {
-  height: max-content;
+  height: min-content;
+  display: grid;
 }
 
 .calendarToday,
@@ -70,21 +71,16 @@ body {
 .calendarToday,
 .calendarWeek,
 .calendarTitle,
-.project {
+.projectInput {
   font-size: 30px;
   cursor: pointer;
 }
 
 .calendarToday:hover,
 .calendarWeek:hover,
-.calendarTitle:hover,
-.project:hover {
+.calendarTitle:hover {
   background-color: #222831;
   border-radius: 5px;
-}
-
-.projects {
-  display: grid;
 }
 
 .projectsHeader {
@@ -124,14 +120,19 @@ body {
 
 .projectOptions {
   display: grid;
-  grid-template-rows: repeat(3, 60px);
+  grid-template-rows: repeat(5, 60px);
   padding-top: 10px;
 }
 
-.project {
+.projectInput {
   display: grid;
   align-self: center;
   padding: 10px;
+  width: 270px;
+}
+
+.projectInput:focus {
+  background-color: #222831;
 }
 
 .content {
@@ -144,6 +145,21 @@ body {
 .header {
   display: grid;
   grid-template-rows: 60px 60px;
+}
+
+.headerTitleWrapper {
+  display: grid;
+  grid-template-columns: 1fr 10fr;
+  gap: 25px;
+}
+.headerTitleEdit {
+  cursor: pointer;
+  margin-top: 10px;
+  display: grid;
+  align-items: center;
+}
+.headerTitleEdit:hover {
+  text-decoration: underline;
 }
 
 .headerTitle {
@@ -185,13 +201,29 @@ body {
   font-size: 24px;
   border: 2px solid grey;
   display: grid;
-  grid-template-columns: 50px 1fr 50px;
+  grid-template-columns: 50px 10fr 40px 50px;
   align-items: center;
   border-radius: 10px;
   padding-left: 20px;
-  transition: 0.2s;
   background-color: transparent;
   color: white;
+}
+
+.colour {
+  width: 25px;
+  height: 25px;
+  border-radius: 50px;
+  overflow: hidden;
+  border: 1.5px solid grey;
+  background-color: blue;
+  cursor: pointer;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: none;
 }
 
 .deleteTask {
@@ -202,6 +234,11 @@ body {
 
 input {
   all: unset;
+  display: inline-block;
+}
+
+.task {
+  display: grid;
 }
 
 .taskCheck {
@@ -210,15 +247,21 @@ input {
   border: 1.5px solid white;
   border-radius: 50%;
   display: inline-block;
+  cursor: pointer;
 }
 
-.taskBlack {
-  background-color: rgb(0, 0, 0);
+.checked {
+  background-color: white;
+}
+
+.opacity {
+  opacity: 0.5;
 }
 
 .taskBox:hover {
   box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.254);
   transform: scale(1.01);
+  transition: 0.2s;
 }
 
 .nav,
