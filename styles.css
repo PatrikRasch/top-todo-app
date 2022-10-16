@@ -70,8 +70,7 @@ body {
 
 .calendarToday,
 .calendarWeek,
-.calendarTitle,
-.projectInput {
+.calendarTitle {
   font-size: 30px;
   cursor: pointer;
 }
@@ -122,17 +121,36 @@ body {
   display: grid;
   grid-template-rows: repeat(5, 60px);
   padding-top: 10px;
+  margin-bottom: 25px;
+}
+
+.projectForm {
+  display: grid;
+  grid-template-columns: 0px 170px;
 }
 
 .projectInput {
   display: grid;
   align-self: center;
   padding: 10px;
-  width: 270px;
+  width: 170px;
+  font-size: 20px;
+}
+
+.projectInput:hover {
+  cursor: text;
 }
 
 .projectInput:focus {
   background-color: #222831;
+}
+
+.projectDelete {
+  /* position: absolute; */
+  font-size: 25px;
+  cursor: pointer;
+  align-self: center;
+  margin-left: -25px;
 }
 
 .content {
