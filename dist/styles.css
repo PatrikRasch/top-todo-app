@@ -146,10 +146,10 @@ body {
 }
 
 .projectDelete {
-  /* position: absolute; */
-  font-size: 25px;
+  font-size: 18px;
   cursor: pointer;
   align-self: center;
+  margin-bottom: 3px;
   margin-left: -25px;
 }
 

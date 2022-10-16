@@ -1,16 +1,42 @@
 import { projects } from "./projects.js";
 import { addTaskDom } from "./addTaskDom.js";
 import { dom } from "./dom.js";
+import { v4 as uuidv4 } from "uuid";
+// Dynamically create arrays upon clicking "Add Project".
+// Each new array has a stock name at first, e.g. "Array 3".
+// When user updates title of project, the array name changes to the appropriate title.
+// Each array must have an ID attribute, starting at 0 and counting upwards.
+// Each array has its array items as the tasks inside the project.
 
 export function addTask() {
+  class CreateProject {
+    constructor(id, title) {
+      this.id = id;
+      this.title = title;
+    }
+  }
+  class CreateTask {
+    constructor(id, title, done, projectId) {
+      this.id = id;
+      this.title = title;
+      this.done = done;
+      this.projectId = projectId;
+    }
+  }
+
   const submitProject = (projectForm, projectInput) => {
     projectForm.addEventListener("submit", (e) => {
       e.preventDefault();
+
+      // Find the element in the array that has the same ID as the DOM project element.
+      const findElement = projectArray.find(
+        (element) => element.id === projectForm.id
+      );
+      // Set the array element title to the DOM input title value
+      findElement.title = projectInput.value;
+
       projectInput.addEventListener("keyup", (e) => {
         if (e.key === "Enter") {
-          // projectArray[0] = projectInput.value;
-          // console.log(projectArray);
-
           if (projectOptions.children.length === 1) {
             return projectInput.blur();
           }
@@ -33,6 +59,14 @@ export function addTask() {
     //   console.log("lol");
     // }
   };
+
+  function setId(parent) {
+    let children = parent.children;
+    for (let i = 0; i < children.length; i++) {
+      let child = children[i];
+      child.setAttribute("id", uuidv4());
+    }
+  }
 
   //   const taskBox = document.querySelector(".taskBox");
   //   const tasks = document.querySelector(".tasks");
@@ -124,15 +158,17 @@ export function addTask() {
 
   const projectForm = document.createElement("form");
   projectForm.classList.add("projectForm");
+  projectForm.setAttribute("id", uuidv4());
   projectOptions.appendChild(projectForm);
 
   const projectDelete = document.createElement("div");
   projectDelete.classList.add("projectDelete");
-  projectDelete.textContent = "-";
+  projectDelete.textContent = "x";
   projectForm.appendChild(projectDelete);
 
   const projectInput = document.createElement("input");
   projectInput.classList.add("projectInput");
+  projectInput.value = "Example Project";
   projectInput.setAttribute("placeholder", "Project name");
   projectForm.appendChild(projectInput);
 
@@ -183,22 +219,6 @@ export function addTask() {
   content.appendChild(tasks);
 
   submitProject(projectForm, projectInput);
-  addProject.addEventListener("click", (e) => {
-    const projectForm = document.createElement("form");
-    projectForm.classList.add("projectForm");
-    projectOptions.appendChild(projectForm);
-
-    const projectInput = document.createElement("input");
-    projectInput.classList.add("projectInput");
-    projectInput.setAttribute("placeholder", "Project name");
-    projectForm.appendChild(projectInput);
-    projectInput.focus();
-
-    projectArray = [...projectArray, projectForm];
-    console.log(projectArray);
-
-    submitProject(projectForm, projectInput);
-  });
 
   headerTitleEdit.addEventListener("click", (e) => {
     headerTitle.removeAttribute("disabled", "");
@@ -213,9 +233,37 @@ export function addTask() {
 
   let taskArray = [];
 
+  // let id = taskArray.length;
+
+  // Declares array that holds all the projects.
   let projectArray = [];
-  // projectArray.push(projectForm);
-  // console.log(projectArray);
+  // Creates the initial example project from the CreateProject class.
+  const createProject = new CreateProject(projectForm.id, projectInput.value);
+  // Adds the first project to the project array.
+  projectArray = [...projectArray, createProject];
+  console.table(projectArray);
+
+  addProject.addEventListener("click", (e) => {
+    const projectForm = document.createElement("form");
+    projectForm.classList.add("projectForm");
+    projectOptions.appendChild(projectForm);
+
+    // setId(projectOptions);
+    projectForm.setAttribute("id", uuidv4());
+
+    const projectInput = document.createElement("input");
+    projectInput.classList.add("projectInput");
+    projectInput.setAttribute("placeholder", "Project name");
+    projectForm.appendChild(projectInput);
+
+    projectInput.focus();
+
+    const createProject = new CreateProject(projectForm.id, projectInput.value);
+    projectArray = [...projectArray, createProject];
+    console.table(projectArray);
+
+    submitProject(projectForm, projectInput);
+  });
 
   addTask.addEventListener("click", (e) => {
     const tasks = document.querySelector(".tasks");
@@ -245,32 +293,36 @@ export function addTask() {
     taskBox.appendChild(deleteTask);
     task.appendChild(taskText);
     submitProject(projectForm, projectInput);
-    function setId() {
-      let children = tasks.children;
-      for (let i = 0; i < children.length; i++) {
-        let child = children[i];
-        child.setAttribute("id", i);
-      }
-    }
-    setId();
-    let id = taskArray.length;
-    const createTask = new CreateTask(id, taskText.value, false);
+
+    let taskId = uuidv4();
+
+    taskBox.setAttribute("id", taskId);
+
+    const createTask = new CreateTask(taskBox.id, taskText.value, false, 0);
     taskArray = [...taskArray, createTask];
 
+    console.table(taskArray);
+
+    taskText.focus();
+
     taskCheck.addEventListener("click", (e) => {
+      const findElement = taskArray.find(
+        (element) => element.id === taskBox.id
+      );
       if (taskCheck.classList.contains("checked")) {
         taskCheck.classList.remove("checked");
         taskBox.classList.remove("opacity");
-        taskArray[taskBox.id].done = false;
+        findElement.done = false;
+        console.log(findElement.done);
       } else {
         taskCheck.classList.add("checked");
         taskBox.classList.add("opacity");
-        taskArray[taskBox.id].done = true;
+        findElement.done = true;
+        console.log(findElement.done);
       }
       console.table(taskArray);
     });
     colour.style.backgroundColor = colour.value;
-    // taskBox.style.backgroundColor = colour.value;
     colour.addEventListener("input", (e) => {
       taskBox.style.backgroundColor = colour.value;
     });
@@ -278,11 +330,14 @@ export function addTask() {
     // Updates the task's properties in the array.
     task.addEventListener("submit", (e) => {
       e.preventDefault();
-      taskText.blur();
       //   Sets/updates the title to the array item.
-      //   Bit unsure how this works since <id = taskArray.length>, but it does work.
-      taskArray[id].title = taskText.value;
-
+      const findElement = taskArray.find(
+        (element) => element.id === taskBox.id
+      );
+      findElement.title = taskText.value;
+      if (tasks.children.length === 1) {
+        return taskText.blur();
+      }
       //   Moves onto the next input field whenever enter is clicked
       taskText.addEventListener("keyup", (e) => {
         if (e.key === "Enter") {
@@ -303,22 +358,17 @@ export function addTask() {
 
     // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
     deleteTask.addEventListener("click", (e) => {
+      const findElement = taskArray.find(
+        (element) => element.id === taskBox.id
+      );
+      //
+      const taskIndex = taskArray.indexOf(findElement);
       // Removes the respective element in the array using the DOM elements' id.
-      taskArray.splice(taskBox.id, 1);
-      //   Reassigns id's to all array elements to keep it sequential.
-      taskArray.forEach((element, index) => (element.id = index));
+      taskArray.splice(taskIndex, 1);
       //   Removes the entire task(box) from the DOM.
       tasks.removeChild(taskBox);
       //   Sets new sequential ID's for all DOM elements.
-      setId();
+      // setId(tasks);
     });
   });
-
-  class CreateTask {
-    constructor(id, title, done) {
-      this.id = id;
-      this.title = title;
-      this.done = done;
-    }
-  }
 }
