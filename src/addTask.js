@@ -8,6 +8,12 @@ export function addTask() {
       e.preventDefault();
       projectInput.addEventListener("keyup", (e) => {
         if (e.key === "Enter") {
+          // projectArray[0] = projectInput.value;
+          // console.log(projectArray);
+
+          if (projectOptions.children.length === 1) {
+            return projectInput.blur();
+          }
           if (projectForm.nextElementSibling === null) {
             projectOptions.firstElementChild.querySelector("input").focus();
             return;
@@ -20,6 +26,12 @@ export function addTask() {
         }
       });
     });
+    projectDelete.addEventListener("click", (e) => {
+      projectOptions.removeChild(projectForm);
+    });
+    // if (projectInput.matches(":hover")) {
+    //   console.log("lol");
+    // }
   };
 
   //   const taskBox = document.querySelector(".taskBox");
@@ -94,7 +106,7 @@ export function addTask() {
 
   const editProjects = document.createElement("div");
   editProjects.classList.add("editProjects");
-  editProjects.textContent = "Edit";
+  // editProjects.textContent = "Edit";
   projectsTopLine.appendChild(editProjects);
 
   const contentSeparator2 = document.createElement("div");
@@ -113,6 +125,11 @@ export function addTask() {
   const projectForm = document.createElement("form");
   projectForm.classList.add("projectForm");
   projectOptions.appendChild(projectForm);
+
+  const projectDelete = document.createElement("div");
+  projectDelete.classList.add("projectDelete");
+  projectDelete.textContent = "-";
+  projectForm.appendChild(projectDelete);
 
   const projectInput = document.createElement("input");
   projectInput.classList.add("projectInput");
@@ -177,6 +194,9 @@ export function addTask() {
     projectForm.appendChild(projectInput);
     projectInput.focus();
 
+    projectArray = [...projectArray, projectForm];
+    console.log(projectArray);
+
     submitProject(projectForm, projectInput);
   });
 
@@ -192,6 +212,10 @@ export function addTask() {
   });
 
   let taskArray = [];
+
+  let projectArray = [];
+  // projectArray.push(projectForm);
+  // console.log(projectArray);
 
   addTask.addEventListener("click", (e) => {
     const tasks = document.querySelector(".tasks");
