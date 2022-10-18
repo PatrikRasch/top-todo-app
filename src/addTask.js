@@ -10,17 +10,18 @@ import { v4 as uuidv4 } from "uuid";
 
 export function addTask() {
   class CreateProject {
-    constructor(id, title) {
+    constructor(id, title, taskLink) {
       this.id = id;
       this.title = title;
+      this.taskLink = taskLink;
     }
   }
   class CreateTask {
-    constructor(id, title, done, projectId) {
+    constructor(id, title, done, projectLink) {
       this.id = id;
       this.title = title;
       this.done = done;
-      this.projectId = projectId;
+      this.projectLink = projectLink;
     }
   }
 
@@ -52,21 +53,7 @@ export function addTask() {
         }
       });
     });
-    projectDelete.addEventListener("click", (e) => {
-      projectOptions.removeChild(projectForm);
-    });
-    // if (projectInput.matches(":hover")) {
-    //   console.log("lol");
-    // }
   };
-
-  function setId(parent) {
-    let children = parent.children;
-    for (let i = 0; i < children.length; i++) {
-      let child = children[i];
-      child.setAttribute("id", uuidv4());
-    }
-  }
 
   //   const taskBox = document.querySelector(".taskBox");
   //   const tasks = document.querySelector(".tasks");
@@ -218,8 +205,6 @@ export function addTask() {
   tasks.dataset.lists;
   content.appendChild(tasks);
 
-  submitProject(projectForm, projectInput);
-
   headerTitleEdit.addEventListener("click", (e) => {
     headerTitle.removeAttribute("disabled", "");
     headerTitle.select();
@@ -231,6 +216,20 @@ export function addTask() {
     headerTitle.setAttribute("disabled", "");
   });
 
+  submitProject(projectForm, projectInput);
+  projectDelete.addEventListener("click", (e) => {
+    // Find the element in the array that has the same ID as the DOM project element.
+    const findElement = projectArray.find(
+      (element) => element.id === projectForm.id
+    );
+    // Find the index of the project in the project array.
+    const projectIndex = projectArray.indexOf(findElement);
+    // Removes the respective element in the array using the DOM elements' id.
+    projectArray.splice(projectIndex, 1);
+    //   Removes the entire project(form) from the DOM.
+    projectOptions.removeChild(projectForm);
+  });
+
   let taskArray = [];
 
   // let id = taskArray.length;
@@ -238,17 +237,24 @@ export function addTask() {
   // Declares array that holds all the projects.
   let projectArray = [];
   // Creates the initial example project from the CreateProject class.
-  const createProject = new CreateProject(projectForm.id, projectInput.value);
+  const createProject = new CreateProject(
+    projectForm.id,
+    projectInput.value,
+    uuidv4()
+  );
   // Adds the first project to the project array.
   projectArray = [...projectArray, createProject];
-  console.table(projectArray);
 
   addProject.addEventListener("click", (e) => {
     const projectForm = document.createElement("form");
     projectForm.classList.add("projectForm");
     projectOptions.appendChild(projectForm);
 
-    // setId(projectOptions);
+    const projectDelete = document.createElement("div");
+    projectDelete.classList.add("projectDelete");
+    projectDelete.textContent = "x";
+    projectForm.appendChild(projectDelete);
+
     projectForm.setAttribute("id", uuidv4());
 
     const projectInput = document.createElement("input");
@@ -258,11 +264,28 @@ export function addTask() {
 
     projectInput.focus();
 
-    const createProject = new CreateProject(projectForm.id, projectInput.value);
+    const createProject = new CreateProject(
+      projectForm.id,
+      projectInput.value,
+      uuidv4()
+    );
     projectArray = [...projectArray, createProject];
-    console.table(projectArray);
 
     submitProject(projectForm, projectInput);
+
+    projectDelete.addEventListener("click", (e) => {
+      // Find the element in the array that has the same ID as the DOM project element.
+      const findElement = projectArray.find(
+        (element) => element.id === projectForm.id
+      );
+      // Find the index of the project in the project array.
+      const projectIndex = projectArray.indexOf(findElement);
+      // Removes the respective element in the array using the DOM elements' id.
+      projectArray.splice(projectIndex, 1);
+      //   Removes the entire project(form) from the DOM.
+      projectOptions.removeChild(projectForm);
+    });
+    console.table(projectArray);
   });
 
   addTask.addEventListener("click", (e) => {
@@ -298,7 +321,22 @@ export function addTask() {
 
     taskBox.setAttribute("id", taskId);
 
-    const createTask = new CreateTask(taskBox.id, taskText.value, false, 0);
+    // Find the first matching project
+    const match = projectArray.find((element) => element.id === projectForm.id);
+    console.log(match);
+
+    // Find the index of the matching project 99
+    const matchIndex = projectArray.indexOf(match);
+    console.log(matchIndex);
+
+    let projectLink = projectArray[0].taskLink;
+
+    const createTask = new CreateTask(
+      taskBox.id,
+      taskText.value,
+      false,
+      projectLink
+    );
     taskArray = [...taskArray, createTask];
 
     console.table(taskArray);
@@ -367,8 +405,6 @@ export function addTask() {
       taskArray.splice(taskIndex, 1);
       //   Removes the entire task(box) from the DOM.
       tasks.removeChild(taskBox);
-      //   Sets new sequential ID's for all DOM elements.
-      // setId(tasks);
     });
   });
 }
