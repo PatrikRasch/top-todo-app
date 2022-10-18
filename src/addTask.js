@@ -25,6 +25,12 @@ export function addTask() {
     }
   }
 
+  // class CreateTaskArray {
+  //   constructor(taskArrayId) {
+  //     this.taskArrayId = taskArrayId;
+  //   }
+  // }
+
   const submitProject = (projectForm, projectInput) => {
     projectForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -54,10 +60,6 @@ export function addTask() {
       });
     });
   };
-
-  //   const taskBox = document.querySelector(".taskBox");
-  //   const tasks = document.querySelector(".tasks");
-  //   const task = document.querySelector(".task");
 
   const lists = document.querySelector("[data-lists]");
   const input = document.querySelector("[data-input]");
@@ -232,8 +234,6 @@ export function addTask() {
 
   let taskArray = [];
 
-  // let id = taskArray.length;
-
   // Declares array that holds all the projects.
   let projectArray = [];
   // Creates the initial example project from the CreateProject class.
@@ -244,6 +244,12 @@ export function addTask() {
   );
   // Adds the first project to the project array.
   projectArray = [...projectArray, createProject];
+
+  let activeProject = projectForm.id;
+
+  projectForm.addEventListener("click", (e) => {
+    activeProject = e.currentTarget.id;
+  });
 
   addProject.addEventListener("click", (e) => {
     const projectForm = document.createElement("form");
@@ -261,6 +267,21 @@ export function addTask() {
     projectInput.classList.add("projectInput");
     projectInput.setAttribute("placeholder", "Project name");
     projectForm.appendChild(projectInput);
+
+    // Currently working on:
+    // I need a function that loops through taskArray and only appends the tasks that matches the most recently clicked projectArray's ID.
+    // A new task's projectLink is determined based upon what project has recently been clicked.
+
+    // Extra thoughts:
+    // My taskArray will then hold all the tasks from all the projects.
+    // When I delete a task from any project, the task will be removed from the dom quite simply.
+    // To remove it from the array, I will use the find function.
+
+    // Ignore:
+    // Every time a new project is made, a new taskArray is created.
+    // This new taskArray only needs an ID property which matches the project's ID.
+    // Make one taskArray per project that is linked through their taskLink and projectLink id's.
+    // When "newProject" is clicked, a new taskArray is created.
 
     projectInput.focus();
 
@@ -285,7 +306,10 @@ export function addTask() {
       //   Removes the entire project(form) from the DOM.
       projectOptions.removeChild(projectForm);
     });
-    console.table(projectArray);
+
+    projectForm.addEventListener("click", (e) => {
+      activeProject = e.currentTarget.id;
+    });
   });
 
   addTask.addEventListener("click", (e) => {
@@ -321,15 +345,14 @@ export function addTask() {
 
     taskBox.setAttribute("id", taskId);
 
-    // Find the first matching project
-    const match = projectArray.find((element) => element.id === projectForm.id);
+    // Find the first project from projectArray matching with activeProject.
+    const match = projectArray.find((element) => element.id === activeProject);
     console.log(match);
-
-    // Find the index of the matching project 99
+    // Find the index of the matching project
     const matchIndex = projectArray.indexOf(match);
-    console.log(matchIndex);
+    // console.log(matchIndex);
 
-    let projectLink = projectArray[0].taskLink;
+    let projectLink = match.taskLink;
 
     const createTask = new CreateTask(
       taskBox.id,
@@ -339,6 +362,7 @@ export function addTask() {
     );
     taskArray = [...taskArray, createTask];
 
+    console.table(projectArray);
     console.table(taskArray);
 
     taskText.focus();
@@ -358,7 +382,6 @@ export function addTask() {
         findElement.done = true;
         console.log(findElement.done);
       }
-      console.table(taskArray);
     });
     colour.style.backgroundColor = colour.value;
     colour.addEventListener("input", (e) => {
