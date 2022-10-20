@@ -2,11 +2,7 @@ import { projects } from "./projects.js";
 import { addTaskDom } from "./addTaskDom.js";
 import { dom } from "./dom.js";
 import { v4 as uuidv4 } from "uuid";
-// Dynamically create arrays upon clicking "Add Project".
-// Each new array has a stock name at first, e.g. "Array 3".
-// When user updates title of project, the array name changes to the appropriate title.
-// Each array must have an ID attribute, starting at 0 and counting upwards.
-// Each array has its array items as the tasks inside the project.
+// import { submitProject } from "./submitProject.js";
 
 export function addTask() {
   class CreateProject {
@@ -24,12 +20,6 @@ export function addTask() {
       this.projectLink = projectLink;
     }
   }
-
-  // class CreateTaskArray {
-  //   constructor(taskArrayId) {
-  //     this.taskArrayId = taskArrayId;
-  //   }
-  // }
 
   const submitProject = (projectForm, projectInput) => {
     projectForm.addEventListener("submit", (e) => {
@@ -61,8 +51,10 @@ export function addTask() {
     });
   };
 
-  const lists = document.querySelector("[data-lists]");
-  const input = document.querySelector("[data-input]");
+  // Declare the array that holds all the tasks/todos.
+  let taskArray = [];
+  // Declares array that holds all the projects.
+  let projectArray = [];
 
   const contentDiv = document.querySelector("#content");
 
@@ -219,6 +211,7 @@ export function addTask() {
   });
 
   submitProject(projectForm, projectInput);
+
   projectDelete.addEventListener("click", (e) => {
     // Find the element in the array that has the same ID as the DOM project element.
     const findElement = projectArray.find(
@@ -232,10 +225,6 @@ export function addTask() {
     projectOptions.removeChild(projectForm);
   });
 
-  let taskArray = [];
-
-  // Declares array that holds all the projects.
-  let projectArray = [];
   // Creates the initial example project from the CreateProject class.
   const createProject = new CreateProject(
     projectForm.id,
@@ -268,21 +257,6 @@ export function addTask() {
     projectInput.setAttribute("placeholder", "Project name");
     projectForm.appendChild(projectInput);
 
-    // Currently working on:
-    // I need a function that loops through taskArray and only appends the tasks that matches the most recently clicked projectArray's ID.
-    // A new task's projectLink is determined based upon what project has recently been clicked.
-
-    // Extra thoughts:
-    // My taskArray will then hold all the tasks from all the projects.
-    // When I delete a task from any project, the task will be removed from the dom quite simply.
-    // To remove it from the array, I will use the find function.
-
-    // Ignore:
-    // Every time a new project is made, a new taskArray is created.
-    // This new taskArray only needs an ID property which matches the project's ID.
-    // Make one taskArray per project that is linked through their taskLink and projectLink id's.
-    // When "newProject" is clicked, a new taskArray is created.
-
     projectInput.focus();
 
     const createProject = new CreateProject(
@@ -307,19 +281,91 @@ export function addTask() {
       projectOptions.removeChild(projectForm);
     });
 
+    let activeProjectElement;
+
+    const showTasks = (arrayItem) => {
+      const tasks = document.querySelector(".tasks");
+      const taskBox = document.createElement("div");
+      taskBox.classList.add("taskBox");
+      const taskCheck = document.createElement("div");
+      taskCheck.classList.add("taskCheck");
+      const task = document.createElement("form");
+      task.setAttribute("type", "text");
+      task.setAttribute("method", "post");
+      task.setAttribute("name", "taskForm");
+      task.dataset.form;
+      task.classList.add("task");
+      const taskText = document.createElement("input");
+      taskText.dataset.input;
+      const colour = document.createElement("input");
+      colour.setAttribute("type", "color");
+      colour.classList.add("colour");
+      const deleteTask = document.createElement("img");
+      deleteTask.src = "../dist/xIcon.png";
+      deleteTask.classList.add("deleteTask");
+      taskText.setAttribute("placeholder", "What's your task?");
+
+      taskText.value = arrayItem.title;
+      if (arrayItem.done === true) {
+        taskCheck.classList.add("checked");
+        taskBox.classList.add("opacity");
+      }
+      taskCheck.addEventListener("click", (e) => {
+        taskCheckClicked(taskCheck, taskBox, taskArray);
+      });
+
+      // Appending
+      tasks.appendChild(taskBox);
+      taskBox.appendChild(taskCheck);
+      taskBox.appendChild(task);
+      taskBox.appendChild(colour);
+      taskBox.appendChild(deleteTask);
+      task.appendChild(taskText);
+    };
+
     projectForm.addEventListener("click", (e) => {
       activeProject = e.currentTarget.id;
+      projectArray.forEach((arrayItem) => {
+        if (arrayItem.id === activeProject) {
+          activeProjectElement = arrayItem;
+        }
+      });
+      taskArray.forEach((arrayItem) => {
+        if (arrayItem.projectLink === activeProjectElement.taskLink) {
+          // Show all the dom elements with the matching id
+          // Rebuild and append all the tasks/todos using the properties stored in the taskArray. 99
+          console.log(arrayItem.title);
+          console.log(arrayItem.done);
+
+          showTasks(arrayItem);
+        }
+      });
+      // Further, loop through taskArray and find all elements that match this taskLink.
+      // Finally, only append the elements that fulfills this requirement.
     });
   });
+
+  const taskCheckClicked = (taskCheck, taskBox, taskArray) => {
+    const findElement = taskArray.find((element) => element.id === taskBox.id);
+    if (taskCheck.classList.contains("checked")) {
+      taskCheck.classList.remove("checked");
+      taskBox.classList.remove("opacity");
+      findElement.done = false;
+      console.log(findElement.done);
+    } else {
+      taskCheck.classList.add("checked");
+      taskBox.classList.add("opacity");
+      findElement.done = true;
+      console.log(findElement.done);
+    }
+  };
 
   addTask.addEventListener("click", (e) => {
     const tasks = document.querySelector(".tasks");
     const taskBox = document.createElement("div");
     taskBox.classList.add("taskBox");
-    tasks.appendChild(taskBox);
     const taskCheck = document.createElement("div");
     taskCheck.classList.add("taskCheck");
-    taskBox.appendChild(taskCheck);
     const task = document.createElement("form");
     task.setAttribute("type", "text");
     task.setAttribute("method", "post");
@@ -335,25 +381,21 @@ export function addTask() {
     deleteTask.src = "../dist/xIcon.png";
     deleteTask.classList.add("deleteTask");
     taskText.setAttribute("placeholder", "What's your task?");
+    tasks.appendChild(taskBox);
+    taskBox.appendChild(taskCheck);
     taskBox.appendChild(task);
     taskBox.appendChild(colour);
     taskBox.appendChild(deleteTask);
     task.appendChild(taskText);
+
     submitProject(projectForm, projectInput);
 
     let taskId = uuidv4();
-
     taskBox.setAttribute("id", taskId);
-
     // Find the first project from projectArray matching with activeProject.
     const match = projectArray.find((element) => element.id === activeProject);
-    console.log(match);
-    // Find the index of the matching project
-    const matchIndex = projectArray.indexOf(match);
-    // console.log(matchIndex);
-
+    // The line below is sets the projectLink to match the projectArray's taskLink.
     let projectLink = match.taskLink;
-
     const createTask = new CreateTask(
       taskBox.id,
       taskText.value,
@@ -361,27 +403,14 @@ export function addTask() {
       projectLink
     );
     taskArray = [...taskArray, createTask];
-
+    console.log(activeProject);
     console.table(projectArray);
     console.table(taskArray);
 
     taskText.focus();
 
     taskCheck.addEventListener("click", (e) => {
-      const findElement = taskArray.find(
-        (element) => element.id === taskBox.id
-      );
-      if (taskCheck.classList.contains("checked")) {
-        taskCheck.classList.remove("checked");
-        taskBox.classList.remove("opacity");
-        findElement.done = false;
-        console.log(findElement.done);
-      } else {
-        taskCheck.classList.add("checked");
-        taskBox.classList.add("opacity");
-        findElement.done = true;
-        console.log(findElement.done);
-      }
+      taskCheckClicked(taskCheck, taskBox, taskArray);
     });
     colour.style.backgroundColor = colour.value;
     colour.addEventListener("input", (e) => {
