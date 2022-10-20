@@ -1,10 +1,42 @@
-import { projects } from "./projects.js";
-import { addTaskDom } from "./addTaskDom.js";
-import { dom } from "./dom.js";
+// import { projects } from "./projects.js";
 import { v4 as uuidv4 } from "uuid";
-// import { submitProject } from "./submitProject.js";
+// import { 'submit'Project } from "./submitProject.js";
+import {
+  wrapper,
+  nav,
+  calendarHeader,
+  calendarHeaderTitle,
+  contentSeparator,
+  calendarOptions,
+  calendarToday,
+  calendarWeek,
+  calendarTitle,
+  projects,
+  projectsHeader,
+  projectsTopLine,
+  projectsTitle,
+  editProjects,
+  contentSeparator2,
+  addProject,
+  projectOptions,
+  projectForm,
+  projectDelete,
+  projectInput,
+  content,
+  header,
+  headerTitleWrapper,
+  headerTitleForm,
+  headerTitle,
+  headerTitleEdit,
+  headerDescription,
+  contentSeparator3,
+  addTask,
+  tasks,
+} from "./initialDom.js";
 
-export function addTask() {
+// import { projectForm, projectDelete, projectInput } from "./addProjectDom.js";
+
+export function addTaskName() {
   class CreateProject {
     constructor(id, title, taskLink) {
       this.id = id;
@@ -20,17 +52,25 @@ export function addTask() {
       this.projectLink = projectLink;
     }
   }
+  // Declare the array that holds all the tasks/todos.
+  let taskArray = [];
+  // Declares array that holds all the projects.
+  let projectArray = [];
+
+  // Loops through the targetArray and returns the first match.
+  const findElement = (targetArray, targetMatch) => {
+    return targetArray.find((arrayItem) => {
+      if (arrayItem.id === targetMatch.id) {
+        return arrayItem;
+      }
+    });
+  };
 
   const submitProject = (projectForm, projectInput) => {
     projectForm.addEventListener("submit", (e) => {
       e.preventDefault();
-
-      // Find the element in the array that has the same ID as the DOM project element.
-      const findElement = projectArray.find(
-        (element) => element.id === projectForm.id
-      );
-      // Set the array element title to the DOM input title value
-      findElement.title = projectInput.value;
+      // Find the element in the array that has the same ID as the DOM project element and set its title to the array input title.
+      findElement(projectArray, projectForm).title = projectInput.value;
 
       projectInput.addEventListener("keyup", (e) => {
         if (e.key === "Enter") {
@@ -51,154 +91,6 @@ export function addTask() {
     });
   };
 
-  // Declare the array that holds all the tasks/todos.
-  let taskArray = [];
-  // Declares array that holds all the projects.
-  let projectArray = [];
-
-  const contentDiv = document.querySelector("#content");
-
-  const wrapper = document.createElement("div");
-  wrapper.classList.add("wrapper");
-  contentDiv.appendChild(wrapper);
-
-  const nav = document.createElement("div");
-  nav.classList.add("nav");
-  wrapper.appendChild(nav);
-
-  const calendar = document.createElement("div");
-  calendar.classList.add("calendar");
-  nav.appendChild(calendar);
-
-  const calendarHeader = document.createElement("div");
-  calendarHeader.classList.add("calendarHeader");
-  calendar.appendChild(calendarHeader);
-
-  const calendarHeaderTitle = document.createElement("div");
-  calendarHeaderTitle.classList.add("calendarHeaderTitle");
-  calendarHeaderTitle.textContent = "Plan";
-  calendarHeader.appendChild(calendarHeaderTitle);
-
-  const contentSeparator = document.createElement("div");
-  contentSeparator.classList.add("contentSeparator");
-  calendarHeader.appendChild(contentSeparator);
-
-  const calendarOptions = document.createElement("div");
-  calendarOptions.classList.add("calendarOptions");
-  calendar.appendChild(calendarOptions);
-
-  const calendarToday = document.createElement("div");
-  calendarToday.classList.add("calendarToday");
-  calendarToday.textContent = "Today";
-  calendarOptions.appendChild(calendarToday);
-
-  const calendarWeek = document.createElement("div");
-  calendarWeek.classList.add("calendarWeek");
-  calendarWeek.textContent = "This Week";
-  calendarOptions.appendChild(calendarWeek);
-
-  const calendarTitle = document.createElement("div");
-  calendarTitle.classList.add("calendarTitle");
-  calendarTitle.textContent = "Calendar";
-  calendarOptions.appendChild(calendarTitle);
-
-  const projects = document.createElement("div");
-  projects.classList.add("projects");
-  nav.appendChild(projects);
-
-  const projectsHeader = document.createElement("div");
-  projectsHeader.classList.add("projectsHeader");
-  projects.appendChild(projectsHeader);
-
-  const projectsTopLine = document.createElement("div");
-  projectsTopLine.classList.add("projectsTopLine");
-  projectsHeader.appendChild(projectsTopLine);
-
-  const projectsTitle = document.createElement("div");
-  projectsTitle.classList.add("projectsTitle");
-  projectsTitle.textContent = "Projects";
-  projectsTopLine.appendChild(projectsTitle);
-
-  const editProjects = document.createElement("div");
-  editProjects.classList.add("editProjects");
-  // editProjects.textContent = "Edit";
-  projectsTopLine.appendChild(editProjects);
-
-  const contentSeparator2 = document.createElement("div");
-  contentSeparator2.classList.add("contentSeparator");
-  projectsHeader.appendChild(contentSeparator2);
-
-  const addProject = document.createElement("div");
-  addProject.classList.add("addProject");
-  addProject.textContent = "+ Add Project";
-  projectsHeader.appendChild(addProject);
-
-  const projectOptions = document.createElement("div");
-  projectOptions.classList.add("projectOptions");
-  projects.appendChild(projectOptions);
-
-  const projectForm = document.createElement("form");
-  projectForm.classList.add("projectForm");
-  projectForm.setAttribute("id", uuidv4());
-  projectOptions.appendChild(projectForm);
-
-  const projectDelete = document.createElement("div");
-  projectDelete.classList.add("projectDelete");
-  projectDelete.textContent = "x";
-  projectForm.appendChild(projectDelete);
-
-  const projectInput = document.createElement("input");
-  projectInput.classList.add("projectInput");
-  projectInput.value = "Example Project";
-  projectInput.setAttribute("placeholder", "Project name");
-  projectForm.appendChild(projectInput);
-
-  const content = document.createElement("div");
-  content.classList.add("content");
-  wrapper.appendChild(content);
-
-  const header = document.createElement("div");
-  header.classList.add("header");
-  content.appendChild(header);
-
-  const headerTitleWrapper = document.createElement("div");
-  headerTitleWrapper.classList.add("headerTitleWrapper");
-  header.appendChild(headerTitleWrapper);
-
-  const headerTitleForm = document.createElement("form");
-  headerTitleForm.classList.add("headerTitleForm");
-  headerTitleWrapper.appendChild(headerTitleForm);
-
-  const headerTitle = document.createElement("input");
-  headerTitle.classList.add("headerTitle");
-  headerTitle.setAttribute("placeholder", "Header Title");
-  headerTitleForm.appendChild(headerTitle);
-
-  const headerTitleEdit = document.createElement("div");
-  headerTitleEdit.classList.add("headerTitleEdit");
-  headerTitleEdit.textContent = "Edit";
-  headerTitleWrapper.appendChild(headerTitleEdit);
-
-  const headerDescription = document.createElement("div");
-  headerDescription.classList.add("headerDescription");
-  headerDescription.textContent =
-    "Header Description which describes our project in great detail.";
-  header.appendChild(headerDescription);
-
-  const contentSeparator3 = document.createElement("div");
-  contentSeparator3.classList.add("contentSeparator");
-  content.appendChild(contentSeparator3);
-
-  const addTask = document.createElement("div");
-  addTask.classList.add("addTask");
-  addTask.textContent = "+ Add Task";
-  content.appendChild(addTask);
-
-  const tasks = document.createElement("div");
-  tasks.classList.add("tasks");
-  tasks.dataset.lists;
-  content.appendChild(tasks);
-
   headerTitleEdit.addEventListener("click", (e) => {
     headerTitle.removeAttribute("disabled", "");
     headerTitle.select();
@@ -213,12 +105,11 @@ export function addTask() {
   submitProject(projectForm, projectInput);
 
   projectDelete.addEventListener("click", (e) => {
-    // Find the element in the array that has the same ID as the DOM project element.
-    const findElement = projectArray.find(
-      (element) => element.id === projectForm.id
+    // Find the index of the project in projectArray that has the same ID as the DOM project element.
+    const projectIndex = projectArray.indexOf(
+      findElement(projectArray, projectForm)
     );
-    // Find the index of the project in the project array.
-    const projectIndex = projectArray.indexOf(findElement);
+    console.log(projectIndex);
     // Removes the respective element in the array using the DOM elements' id.
     projectArray.splice(projectIndex, 1);
     //   Removes the entire project(form) from the DOM.
@@ -241,6 +132,8 @@ export function addTask() {
   });
 
   addProject.addEventListener("click", (e) => {
+    const projectOptions = document.querySelector(".projectOptions");
+
     const projectForm = document.createElement("form");
     projectForm.classList.add("projectForm");
     projectOptions.appendChild(projectForm);
@@ -267,14 +160,12 @@ export function addTask() {
     projectArray = [...projectArray, createProject];
 
     submitProject(projectForm, projectInput);
-
     projectDelete.addEventListener("click", (e) => {
-      // Find the element in the array that has the same ID as the DOM project element.
-      const findElement = projectArray.find(
-        (element) => element.id === projectForm.id
+      // Find the index of the project in projectArray that has the same ID as the DOM project element.
+      const projectIndex = projectArray.indexOf(
+        findElement(projectArray, projectForm)
       );
-      // Find the index of the project in the project array.
-      const projectIndex = projectArray.indexOf(findElement);
+      console.log(projectIndex);
       // Removes the respective element in the array using the DOM elements' id.
       projectArray.splice(projectIndex, 1);
       //   Removes the entire project(form) from the DOM.
@@ -346,17 +237,14 @@ export function addTask() {
   });
 
   const taskCheckClicked = (taskCheck, taskBox, taskArray) => {
-    const findElement = taskArray.find((element) => element.id === taskBox.id);
     if (taskCheck.classList.contains("checked")) {
       taskCheck.classList.remove("checked");
       taskBox.classList.remove("opacity");
-      findElement.done = false;
-      console.log(findElement.done);
+      findElement(taskArray, taskBox).done = false;
     } else {
       taskCheck.classList.add("checked");
       taskBox.classList.add("opacity");
-      findElement.done = true;
-      console.log(findElement.done);
+      findElement(taskArray, taskBox).done = true;
     }
   };
 
@@ -421,10 +309,7 @@ export function addTask() {
     task.addEventListener("submit", (e) => {
       e.preventDefault();
       //   Sets/updates the title to the array item.
-      const findElement = taskArray.find(
-        (element) => element.id === taskBox.id
-      );
-      findElement.title = taskText.value;
+      findElement(taskArray, taskBox).title = taskText.value;
       if (tasks.children.length === 1) {
         return taskText.blur();
       }
@@ -448,11 +333,7 @@ export function addTask() {
 
     // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
     deleteTask.addEventListener("click", (e) => {
-      const findElement = taskArray.find(
-        (element) => element.id === taskBox.id
-      );
-      //
-      const taskIndex = taskArray.indexOf(findElement);
+      const taskIndex = taskArray.indexOf(findElement(taskArray, taskBox));
       // Removes the respective element in the array using the DOM elements' id.
       taskArray.splice(taskIndex, 1);
       //   Removes the entire task(box) from the DOM.
