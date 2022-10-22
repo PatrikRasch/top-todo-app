@@ -34,7 +34,8 @@ import {
   tasks,
 } from "./initialDom.js";
 
-// import { projectForm, projectDelete, projectInput } from "./addProjectDom.js";
+import { addProjectDom } from "./addProjectDom.js";
+import { addTaskDom } from "./addTaskDom.js";
 
 export function addTaskName() {
   class CreateProject {
@@ -52,6 +53,7 @@ export function addTaskName() {
       this.projectLink = projectLink;
     }
   }
+
   // Declare the array that holds all the tasks/todos.
   let taskArray = [];
   // Declares array that holds all the projects.
@@ -66,6 +68,28 @@ export function addTaskName() {
     });
   };
 
+  // Focuses and blurs the input boxes as the user navigates them.
+  // The formElement parameter is poorly named, as it depends on the DOM structure, but in most cases it will be a form element.
+  const focusSelector = (e, parentElement, currentElement, formElement) => {
+    if (e.key === "Enter") {
+      // If there's only one child element, blur the selection.
+      if (parentElement.children.length === 1) {
+        return currentElement.blur();
+      }
+      // If the selection is at the final DOM element of the list, go back to the first DOM element.
+      if (formElement.nextElementSibling === null) {
+        parentElement.firstElementChild.querySelector("input").focus();
+        return;
+      }
+      // Focus on the next DOM element
+      const nextInput = formElement.nextElementSibling;
+      nextInput.querySelector("input").focus();
+    }
+    if (e.key === "Escape") {
+      currentElement.blur();
+    }
+  };
+
   const submitProject = (projectForm, projectInput) => {
     projectForm.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -73,20 +97,7 @@ export function addTaskName() {
       findElement(projectArray, projectForm).title = projectInput.value;
 
       projectInput.addEventListener("keyup", (e) => {
-        if (e.key === "Enter") {
-          if (projectOptions.children.length === 1) {
-            return projectInput.blur();
-          }
-          if (projectForm.nextElementSibling === null) {
-            projectOptions.firstElementChild.querySelector("input").focus();
-            return;
-          }
-          const nextInput = projectForm.nextElementSibling;
-          nextInput.querySelector("input").focus();
-        }
-        if (e.key === "Escape") {
-          projectInput.blur();
-        }
+        focusSelector(e, projectOptions, projectInput, projectForm);
       });
     });
   };
@@ -109,7 +120,6 @@ export function addTaskName() {
     const projectIndex = projectArray.indexOf(
       findElement(projectArray, projectForm)
     );
-    console.log(projectIndex);
     // Removes the respective element in the array using the DOM elements' id.
     projectArray.splice(projectIndex, 1);
     //   Removes the entire project(form) from the DOM.
@@ -132,24 +142,10 @@ export function addTaskName() {
   });
 
   addProject.addEventListener("click", (e) => {
-    const projectOptions = document.querySelector(".projectOptions");
-
-    const projectForm = document.createElement("form");
-    projectForm.classList.add("projectForm");
-    projectOptions.appendChild(projectForm);
-
-    const projectDelete = document.createElement("div");
-    projectDelete.classList.add("projectDelete");
-    projectDelete.textContent = "x";
-    projectForm.appendChild(projectDelete);
-
-    projectForm.setAttribute("id", uuidv4());
-
-    const projectInput = document.createElement("input");
-    projectInput.classList.add("projectInput");
-    projectInput.setAttribute("placeholder", "Project name");
-    projectForm.appendChild(projectInput);
-
+    const addProjectDomReturn = addProjectDom();
+    const projectForm = addProjectDomReturn[0];
+    const projectDelete = addProjectDomReturn[1];
+    const projectInput = addProjectDomReturn[2];
     projectInput.focus();
 
     const createProject = new CreateProject(
@@ -165,7 +161,6 @@ export function addTaskName() {
       const projectIndex = projectArray.indexOf(
         findElement(projectArray, projectForm)
       );
-      console.log(projectIndex);
       // Removes the respective element in the array using the DOM elements' id.
       projectArray.splice(projectIndex, 1);
       //   Removes the entire project(form) from the DOM.
@@ -249,32 +244,13 @@ export function addTaskName() {
   };
 
   addTask.addEventListener("click", (e) => {
-    const tasks = document.querySelector(".tasks");
-    const taskBox = document.createElement("div");
-    taskBox.classList.add("taskBox");
-    const taskCheck = document.createElement("div");
-    taskCheck.classList.add("taskCheck");
-    const task = document.createElement("form");
-    task.setAttribute("type", "text");
-    task.setAttribute("method", "post");
-    task.setAttribute("name", "taskForm");
-    task.dataset.form;
-    task.classList.add("task");
-    const taskText = document.createElement("input");
-    taskText.dataset.input;
-    const colour = document.createElement("input");
-    colour.setAttribute("type", "color");
-    colour.classList.add("colour");
-    const deleteTask = document.createElement("img");
-    deleteTask.src = "../dist/xIcon.png";
-    deleteTask.classList.add("deleteTask");
-    taskText.setAttribute("placeholder", "What's your task?");
-    tasks.appendChild(taskBox);
-    taskBox.appendChild(taskCheck);
-    taskBox.appendChild(task);
-    taskBox.appendChild(colour);
-    taskBox.appendChild(deleteTask);
-    task.appendChild(taskText);
+    const addTaskDomReturn = addTaskDom();
+    const taskBox = addTaskDomReturn[0];
+    const taskCheck = addTaskDomReturn[1];
+    const task = addTaskDomReturn[2];
+    const colour = addTaskDomReturn[3];
+    const deleteTask = addTaskDomReturn[4];
+    const taskText = addTaskDomReturn[5];
 
     submitProject(projectForm, projectInput);
 
@@ -315,19 +291,7 @@ export function addTaskName() {
       }
       //   Moves onto the next input field whenever enter is clicked
       taskText.addEventListener("keyup", (e) => {
-        if (e.key === "Enter") {
-          // Checks if selection is at the final element and goes back to the first taskBox input field.
-          if (taskBox.nextElementSibling === null) {
-            tasks.firstElementChild.querySelector("input").focus();
-            return;
-          }
-          // Goes to the next taskBox element.
-          const nextBox = taskBox.nextElementSibling;
-          // Goes to the next taskBox children element and chooses the form child.
-          const nextBoxChildren = nextBox.children[1];
-          //   Query selects the input element of the form and focuses it.
-          nextBoxChildren.querySelector("input").focus();
-        }
+        focusSelector(e, tasks, taskText, taskBox);
       });
     });
 
