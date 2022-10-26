@@ -36,6 +36,9 @@ import {
 
 import { addProjectDom } from "./addProjectDom.js";
 import { addTaskDom } from "./addTaskDom.js";
+import { focusSelector } from "./focusSelector.js";
+import { deleteProject } from "./deleteProject.js";
+import { findElement } from "./findElement.js";
 
 export function addTaskName() {
   class CreateProject {
@@ -59,37 +62,6 @@ export function addTaskName() {
   let taskArray = [];
   // Declares array that holds all the projects.
   let projectArray = [];
-
-  // Loops through the targetArray and returns the first match.
-  const findElement = (targetArray, targetMatch) => {
-    return targetArray.find((arrayItem) => {
-      if (arrayItem.id === targetMatch.id) {
-        return arrayItem;
-      }
-    });
-  };
-
-  // Focuses and blurs the input boxes as the user navigates them.
-  // The formElement parameter is poorly named, as it depends on the DOM structure, but in most cases it will be a form element.
-  const focusSelector = (e, parentElement, currentElement, formElement) => {
-    if (e.key === "Enter") {
-      // If there's only one child element, blur the selection.
-      if (parentElement.children.length === 1) {
-        return currentElement.blur();
-      }
-      // If the selection is at the final DOM element of the list, go back to the first DOM element.
-      if (formElement.nextElementSibling === null) {
-        parentElement.firstElementChild.querySelector("input").focus();
-        return;
-      }
-      // Focus on the next DOM element
-      const nextInput = formElement.nextElementSibling;
-      nextInput.querySelector("input").focus();
-    }
-    if (e.key === "Escape") {
-      currentElement.blur();
-    }
-  };
 
   const removeAllChildNodes = (parent) => {
     while (parent.firstChild) {
@@ -181,12 +153,7 @@ export function addTaskName() {
   submitProject(projectForm, projectInput);
 
   projectDelete.addEventListener("click", (e) => {
-    // Find the index of the project in projectArray that has the same ID as the DOM project element.
-    const projectIndex = projectArray.indexOf(findElement(projectArray, projectForm));
-    // Removes the respective element in the array using the DOM elements' id.
-    projectArray.splice(projectIndex, 1);
-    //   Removes the entire project(form) from the DOM.
-    projectOptions.removeChild(projectForm);
+    deleteProject(e, projectArray, taskArray, activeProject, activeProjectElement, projectForm, projectOptions);
   });
 
   // Creates the initial example project from the CreateProject class.
@@ -194,7 +161,9 @@ export function addTaskName() {
   // Adds the first project to the project array.
   projectArray = [...projectArray, createProject];
 
+  // activeProject is the projectForm's id element.
   let activeProject = projectForm.id;
+  // activeProjectElement is the arrayItem with a matching id of activeProject.
   let activeProjectElement;
 
   projectForm.addEventListener("click", (e) => {
@@ -209,11 +178,11 @@ export function addTaskName() {
     });
     taskArray.forEach((arrayItem) => {
       if (arrayItem.projectLink === activeProjectElement.taskLink) {
-        console.log(arrayItem.done);
         // Rebuild and append all the tasks/todos using the properties stored in the taskArray.
         showTasks(arrayItem);
       }
     });
+    projectInput.focus();
   });
 
   addProject.addEventListener("click", (e) => {
@@ -228,12 +197,7 @@ export function addTaskName() {
 
     submitProject(projectForm, projectInput);
     projectDelete.addEventListener("click", (e) => {
-      // Find the index of the project in projectArray that has the same ID as the DOM project element.
-      const projectIndex = projectArray.indexOf(findElement(projectArray, projectForm));
-      // Removes the respective element in the array using the DOM elements' id.
-      projectArray.splice(projectIndex, 1);
-      //   Removes the entire project(form) from the DOM.
-      projectOptions.removeChild(projectForm);
+      deleteProject(e, projectArray, taskArray, activeProject, activeProjectElement, projectForm, projectOptions);
     });
 
     projectForm.addEventListener("click", (e) => {
@@ -247,11 +211,11 @@ export function addTaskName() {
       });
       taskArray.forEach((arrayItem) => {
         if (arrayItem.projectLink === activeProjectElement.taskLink) {
-          console.log(arrayItem.done);
           // Rebuild and append all the tasks/todos using the properties stored in the taskArray.
           showTasks(arrayItem);
         }
       });
+      projectInput.focus();
     });
   });
 
@@ -268,6 +232,9 @@ export function addTaskName() {
   };
 
   addTask.addEventListener("click", (e) => {
+    if (projectArray.length === 0) {
+      return alert("Make a project first");
+    }
     const addTaskDomReturn = addTaskDom();
     const taskBox = addTaskDomReturn[0];
     const taskCheck = addTaskDomReturn[1];
