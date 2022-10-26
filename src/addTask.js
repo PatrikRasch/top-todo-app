@@ -1,6 +1,5 @@
 // import { projects } from "./projects.js";
 import { v4 as uuidv4 } from "uuid";
-// import { 'submit'Project } from "./submitProject.js";
 import {
   wrapper,
   nav,
@@ -39,6 +38,7 @@ import { addTaskDom } from "./addTaskDom.js";
 import { focusSelector } from "./focusSelector.js";
 import { deleteProject } from "./deleteProject.js";
 import { findElement } from "./findElement.js";
+import { submitProject } from "./submitProject.js";
 
 export function addTaskName() {
   class CreateProject {
@@ -67,18 +67,6 @@ export function addTaskName() {
     while (parent.firstChild) {
       parent.removeChild(parent.firstChild);
     }
-  };
-
-  const submitProject = (projectForm, projectInput) => {
-    projectForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      // Find the element in the array that has the same ID as the DOM project element and set its title to the array input title.
-      findElement(projectArray, projectForm).title = projectInput.value;
-
-      projectInput.addEventListener("keyup", (e) => {
-        focusSelector(e, projectOptions, projectInput, projectForm);
-      });
-    });
   };
 
   const updateColour = (colour, domElement) => {
@@ -150,8 +138,6 @@ export function addTaskName() {
     headerTitle.setAttribute("disabled", "");
   });
 
-  submitProject(projectForm, projectInput);
-
   projectDelete.addEventListener("click", (e) => {
     deleteProject(e, projectArray, taskArray, activeProject, activeProjectElement, projectForm, projectOptions);
   });
@@ -160,6 +146,8 @@ export function addTaskName() {
   const createProject = new CreateProject(projectForm.id, projectInput.value, uuidv4());
   // Adds the first project to the project array.
   projectArray = [...projectArray, createProject];
+
+  submitProject(projectForm, projectInput, projectArray, projectOptions);
 
   // activeProject is the projectForm's id element.
   let activeProject = projectForm.id;
@@ -195,10 +183,15 @@ export function addTaskName() {
     const createProject = new CreateProject(projectForm.id, projectInput.value, uuidv4());
     projectArray = [...projectArray, createProject];
 
-    submitProject(projectForm, projectInput);
+    submitProject(projectForm, projectInput, projectArray, projectOptions);
     projectDelete.addEventListener("click", (e) => {
       deleteProject(e, projectArray, taskArray, activeProject, activeProjectElement, projectForm, projectOptions);
     });
+
+    // Ensures that new tasks are added to the new project that's just been added.
+    activeProject = findElement(projectArray, createProject).id;
+    // Removes all the tasks from the display to show the new and empty project.
+    removeAllChildNodes(tasks);
 
     projectForm.addEventListener("click", (e) => {
       removeAllChildNodes(tasks);
@@ -243,7 +236,7 @@ export function addTaskName() {
     const deleteTask = addTaskDomReturn[4];
     const taskText = addTaskDomReturn[5];
 
-    submitProject(projectForm, projectInput);
+    submitProject(projectForm, projectInput, projectArray, projectOptions);
 
     let taskId = uuidv4();
     taskBox.setAttribute("id", taskId);
