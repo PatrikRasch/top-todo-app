@@ -1,4 +1,3 @@
-// import { projects } from "./projects.js";
 import { v4 as uuidv4 } from "uuid";
 import {
   wrapper,
@@ -39,13 +38,19 @@ import { focusSelector } from "./focusSelector.js";
 import { deleteProject } from "./deleteProject.js";
 import { findElement } from "./findElement.js";
 import { submitProject } from "./submitProject.js";
+import { updateColour } from "./updateColour.js";
+import { removeAllChildNodes } from "./removeAllChildNodes.js";
+import { taskSubmit } from "./taskSubmit.js";
+import { taskDelete } from "./taskDelete.js";
 
 export function addTaskName() {
   class CreateProject {
-    constructor(id, title, taskLink) {
+    constructor(id, title, taskLink, headerTitle, headerDescription) {
       this.id = id;
       this.title = title;
       this.taskLink = taskLink;
+      this.headerTitle = headerTitle;
+      this.headerDescription = headerDescription;
     }
   }
   class CreateTask {
@@ -62,17 +67,6 @@ export function addTaskName() {
   let taskArray = [];
   // Declares array that holds all the projects.
   let projectArray = [];
-
-  const removeAllChildNodes = (parent) => {
-    while (parent.firstChild) {
-      parent.removeChild(parent.firstChild);
-    }
-  };
-
-  const updateColour = (colour, domElement) => {
-    domElement.style.backgroundColor = colour.value;
-    findElement(taskArray, domElement).colour = colour.value;
-  };
 
   const showTasks = (arrayItem) => {
     const addTaskDomReturn = addTaskDom();
@@ -100,30 +94,20 @@ export function addTaskName() {
     taskBox.style.backgroundColor = arrayItem.colour;
     // Listen for colour updates
     colour.addEventListener("input", (e) => {
-      updateColour(colour, taskBox);
+      updateColour(colour, taskBox, taskArray);
     });
 
     // Updates the task's title in the array.
     task.addEventListener("submit", (e) => {
-      e.preventDefault();
-      //   Sets/updates the title to the array item.
-      findElement(taskArray, taskBox).title = taskText.value;
-      if (tasks.children.length === 1) {
-        return taskText.blur();
-      }
-      //   Moves onto the next input field whenever enter is clicked
-      taskText.addEventListener("keyup", (e) => {
-        focusSelector(e, tasks, taskText, taskBox);
-      });
+      taskSubmit(e, taskArray, taskBox, taskText, tasks);
     });
 
     // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
     deleteTask.addEventListener("click", (e) => {
-      const taskIndex = taskArray.indexOf(findElement(taskArray, taskBox));
-      // Removes the respective element in the array using the DOM elements' id.
-      taskArray.splice(taskIndex, 1);
-      //   Removes the entire task(box) from the DOM.
-      tasks.removeChild(taskBox);
+      taskDelete(taskArray, taskBox, tasks);
+    });
+    task.addEventListener("keydown", (e) => {
+      findElement(taskArray, taskBox).title = taskText.value;
     });
   };
 
@@ -142,11 +126,22 @@ export function addTaskName() {
     deleteProject(e, projectArray, taskArray, activeProject, activeProjectElement, projectForm, projectOptions);
   });
 
+  // 99
+  // Add projectHeaderTitle to CreateProject.
+  // Add projectHeaderDescription to CreateProject.
+  let projectHeaderTitle = "bruh";
+  let projectHeaderDescription = "bruh 2";
+
   // Creates the initial example project from the CreateProject class.
-  const createProject = new CreateProject(projectForm.id, projectInput.value, uuidv4());
+  const createProject = new CreateProject(
+    projectForm.id,
+    projectInput.value,
+    uuidv4(),
+    projectHeaderTitle,
+    projectHeaderDescription
+  );
   // Adds the first project to the project array.
   projectArray = [...projectArray, createProject];
-
   submitProject(projectForm, projectInput, projectArray, projectOptions);
 
   // activeProject is the projectForm's id element.
@@ -180,7 +175,13 @@ export function addTaskName() {
     const projectInput = addProjectDomReturn[2];
     projectInput.focus();
 
-    const createProject = new CreateProject(projectForm.id, projectInput.value, uuidv4());
+    const createProject = new CreateProject(
+      projectForm.id,
+      projectInput.value,
+      uuidv4(),
+      projectHeaderTitle,
+      projectHeaderDescription
+    );
     projectArray = [...projectArray, createProject];
 
     submitProject(projectForm, projectInput, projectArray, projectOptions);
@@ -236,7 +237,8 @@ export function addTaskName() {
     const deleteTask = addTaskDomReturn[4];
     const taskText = addTaskDomReturn[5];
 
-    submitProject(projectForm, projectInput, projectArray, projectOptions);
+    // Does this need to bere here?
+    // submitProject(projectForm, projectInput, projectArray, projectOptions);
 
     let taskId = uuidv4();
     taskBox.setAttribute("id", taskId);
@@ -244,11 +246,9 @@ export function addTaskName() {
     const match = projectArray.find((element) => element.id === activeProject);
     // The line below is sets the projectLink to match the projectArray's taskLink.
     let projectLink = match.taskLink;
+
     const createTask = new CreateTask(taskBox.id, taskText.value, taskBox.style.backgroundColor, false, projectLink);
     taskArray = [...taskArray, createTask];
-    console.log(activeProject);
-    console.table(projectArray);
-    console.table(taskArray);
 
     taskText.focus();
 
@@ -257,30 +257,21 @@ export function addTaskName() {
     });
 
     colour.addEventListener("input", (e) => {
-      updateColour(colour, taskBox);
+      updateColour(colour, taskBox, taskArray);
+    });
+
+    task.addEventListener("keydown", (e) => {
+      findElement(taskArray, taskBox).title = taskText.value;
     });
 
     // Updates the task's properties in the array.
     task.addEventListener("submit", (e) => {
-      e.preventDefault();
-      //   Sets/updates the title to the array item.
-      findElement(taskArray, taskBox).title = taskText.value;
-      if (tasks.children.length === 1) {
-        return taskText.blur();
-      }
-      //   Moves onto the next input field whenever enter is clicked
-      taskText.addEventListener("keyup", (e) => {
-        focusSelector(e, tasks, taskText, taskBox);
-      });
+      taskSubmit(e, taskArray, taskBox, taskText, tasks);
     });
 
     // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
     deleteTask.addEventListener("click", (e) => {
-      const taskIndex = taskArray.indexOf(findElement(taskArray, taskBox));
-      // Removes the respective element in the array using the DOM elements' id.
-      taskArray.splice(taskIndex, 1);
-      //   Removes the entire task(box) from the DOM.
-      tasks.removeChild(taskBox);
+      taskDelete(taskArray, taskBox, tasks);
     });
   });
 }
