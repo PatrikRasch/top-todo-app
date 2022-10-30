@@ -191,6 +191,11 @@ body {
   white-space: nowrap;
 }
 
+.headerDescriptionInput {
+  font-size: 20px;
+  width: 450px;
+}
+
 .contentSeparator {
   height: 1px;
   width: 100%;

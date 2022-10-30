@@ -115,6 +115,7 @@ headerTitleWrapper.appendChild(headerTitleForm);
 
 export const headerTitle = document.createElement("input");
 headerTitle.classList.add("headerTitle");
+headerTitle.value = projectInput.value;
 headerTitle.setAttribute("placeholder", "Header Title");
 headerTitleForm.appendChild(headerTitle);
 
@@ -123,11 +124,14 @@ headerTitleEdit.classList.add("headerTitleEdit");
 headerTitleEdit.textContent = "Edit";
 headerTitleWrapper.appendChild(headerTitleEdit);
 
-export const headerDescription = document.createElement("div");
+export const headerDescription = document.createElement("form");
 headerDescription.classList.add("headerDescription");
-headerDescription.textContent =
-  "Header Description which describes our project in great detail.";
 header.appendChild(headerDescription);
+
+export const headerDescriptionInput = document.createElement("input");
+headerDescriptionInput.classList.add("headerDescriptionInput");
+headerDescriptionInput.setAttribute("placeholder", "Project Description");
+headerDescription.appendChild(headerDescriptionInput);
 
 export const contentSeparator3 = document.createElement("div");
 contentSeparator3.classList.add("contentSeparator");

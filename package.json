@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/PatrikRasch/top-todo-app#readme",
   "devDependencies": {
+    "source-map-loader": "^4.0.1",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
   },
