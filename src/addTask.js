@@ -182,11 +182,18 @@ export function addTaskName() {
     headerDescription,
     headerDescriptionInput,
     activeProject,
-    activeProjectElement
+    activeProjectElement,
+    taskArray
   );
 
   projectForm.addEventListener("click", (e) => {
+    for (let i = 0; i < projectOptions.childNodes.length; i++) {
+      projectOptions.childNodes[i].classList.remove("focused");
+    }
+    projectForm.classList.add("focused");
+
     activeProject = e.currentTarget.id;
+    projectForm.classList.add("focused");
 
     removeAllChildNodes(tasks);
 
@@ -237,7 +244,8 @@ export function addTaskName() {
       headerDescription,
       headerDescriptionInput,
       activeProject,
-      activeProjectElement
+      activeProjectElement,
+      taskArray
     );
 
     projectDelete.addEventListener("click", (e) => {
@@ -248,8 +256,10 @@ export function addTaskName() {
     removeAllChildNodes(tasks);
 
     projectForm.addEventListener("click", (e) => {
-      console.table(projectArray);
-      console.table(taskArray);
+      for (let i = 0; i < projectOptions.childNodes.length; i++) {
+        projectOptions.childNodes[i].classList.remove("focused");
+      }
+      projectForm.classList.add("focused");
 
       activeProject = e.currentTarget.id;
 
@@ -263,8 +273,7 @@ export function addTaskName() {
           activeProjectElement = arrayItem;
         }
       });
-      // console.table(taskArray);
-      // console.table(projectArray);
+
       taskArray.forEach((arrayItem) => {
         if (arrayItem.projectLink === activeProjectElement.taskLink) {
           // console.log("lol");
@@ -302,12 +311,19 @@ export function addTaskName() {
 
     let taskId = uuidv4();
     taskBox.setAttribute("id", taskId);
+
+    // Sets activeProject based on which project contains the class "focused"
+    for (let i = 0; i < projectOptions.childNodes.length; i++) {
+      if (projectOptions.childNodes[i].classList.contains("focused")) {
+        activeProject = projectOptions.childNodes[i].id;
+      }
+    }
     // Find the first project from projectArray matching with activeProject.
     const match = projectArray.find((element) => element.id === activeProject);
     // The line below sets the projectLink to match the projectArray's taskLink.
 
     let projectLink = match.taskLink;
-
+    console.log(activeProject);
     const createTask = new CreateTask(taskBox.id, taskText.value, taskBox.style.backgroundColor, false, projectLink);
     taskArray = [...taskArray, createTask];
     taskText.focus();

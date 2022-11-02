@@ -9,13 +9,20 @@ export const focusSelector = (e, parentElement, currentElement, formElement) => 
     // If the selection is at the final DOM element of the list, go back to the first DOM element.
     if (formElement.nextElementSibling === null) {
       parentElement.firstElementChild.querySelector("input").focus();
+      parentElement.lastElementChild.classList.remove("focused");
+      parentElement.firstElementChild.classList.add("focused");
+
       return;
     }
     // Focus on the next DOM element
     const nextInput = formElement.nextElementSibling;
     nextInput.querySelector("input").focus();
+    formElement.classList.remove("focused");
+    nextInput.classList.add("focused");
+    console.log("focused");
   }
   if (e.key === "Escape") {
+    formElement.classList.remove("focused");
     currentElement.blur();
   }
 };

@@ -19,6 +19,7 @@ export const deleteProject = (
 ) => {
   let removeArray = [];
 
+  console.log(activeProject);
   const activeProjectBefore = activeProject;
   // Sets activeProject to the delete-clicked form's id and activeProjectElement to the matching arrayItem.
   // Identifies which projectDelete DOM form was clicked compared to the projectArray.
@@ -46,8 +47,10 @@ export const deleteProject = (
 
   if (activeProjectBefore === e.currentTarget.parentNode.id) {
     const parent = e.currentTarget.parentNode;
-    const nextInput = parent.nextElementSibling.querySelector("input");
-    nextInput.focus();
+    if (projectOptions.children.length > 1) {
+      const nextInput = parent.nextElementSibling.querySelector("input");
+      nextInput.focus();
+    }
   } else {
     const currentActiveProject = projectArray.find((arrayItem) => {
       if (arrayItem.id === activeProjectBefore) {

@@ -501,11 +501,18 @@ function addTaskName() {
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescription,
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput,
     activeProject,
-    activeProjectElement
+    activeProjectElement,
+    taskArray
   );
 
   _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.addEventListener("click", (e) => {
+    for (let i = 0; i < _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes.length; i++) {
+      _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[i].classList.remove("focused");
+    }
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.classList.add("focused");
+
     activeProject = e.currentTarget.id;
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.classList.add("focused");
 
     (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_8__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
 
@@ -556,7 +563,8 @@ function addTaskName() {
       _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescription,
       _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput,
       activeProject,
-      activeProjectElement
+      activeProjectElement,
+      taskArray
     );
 
     projectDelete.addEventListener("click", (e) => {
@@ -567,8 +575,10 @@ function addTaskName() {
     (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_8__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
 
     projectForm.addEventListener("click", (e) => {
-      console.table(projectArray);
-      console.table(taskArray);
+      for (let i = 0; i < _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes.length; i++) {
+        _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[i].classList.remove("focused");
+      }
+      projectForm.classList.add("focused");
 
       activeProject = e.currentTarget.id;
 
@@ -582,8 +592,7 @@ function addTaskName() {
           activeProjectElement = arrayItem;
         }
       });
-      // console.table(taskArray);
-      // console.table(projectArray);
+
       taskArray.forEach((arrayItem) => {
         if (arrayItem.projectLink === activeProjectElement.taskLink) {
           // console.log("lol");
@@ -621,12 +630,19 @@ function addTaskName() {
 
     let taskId = (0,uuid__WEBPACK_IMPORTED_MODULE_12__["default"])();
     taskBox.setAttribute("id", taskId);
+
+    // Sets activeProject based on which project contains the class "focused"
+    for (let i = 0; i < _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes.length; i++) {
+      if (_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[i].classList.contains("focused")) {
+        activeProject = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[i].id;
+      }
+    }
     // Find the first project from projectArray matching with activeProject.
     const match = projectArray.find((element) => element.id === activeProject);
     // The line below sets the projectLink to match the projectArray's taskLink.
 
     let projectLink = match.taskLink;
-
+    console.log(activeProject);
     const createTask = new CreateTask(taskBox.id, taskText.value, taskBox.style.backgroundColor, false, projectLink);
     taskArray = [...taskArray, createTask];
     taskText.focus();
@@ -741,6 +757,7 @@ const deleteProject = (
 ) => {
   let removeArray = [];
 
+  console.log(activeProject);
   const activeProjectBefore = activeProject;
   // Sets activeProject to the delete-clicked form's id and activeProjectElement to the matching arrayItem.
   // Identifies which projectDelete DOM form was clicked compared to the projectArray.
@@ -768,8 +785,10 @@ const deleteProject = (
 
   if (activeProjectBefore === e.currentTarget.parentNode.id) {
     const parent = e.currentTarget.parentNode;
-    const nextInput = parent.nextElementSibling.querySelector("input");
-    nextInput.focus();
+    if (projectOptions.children.length > 1) {
+      const nextInput = parent.nextElementSibling.querySelector("input");
+      nextInput.focus();
+    }
   } else {
     const currentActiveProject = projectArray.find((arrayItem) => {
       if (arrayItem.id === activeProjectBefore) {
@@ -852,13 +871,20 @@ const focusSelector = (e, parentElement, currentElement, formElement) => {
     // If the selection is at the final DOM element of the list, go back to the first DOM element.
     if (formElement.nextElementSibling === null) {
       parentElement.firstElementChild.querySelector("input").focus();
+      parentElement.lastElementChild.classList.remove("focused");
+      parentElement.firstElementChild.classList.add("focused");
+
       return;
     }
     // Focus on the next DOM element
     const nextInput = formElement.nextElementSibling;
     nextInput.querySelector("input").focus();
+    formElement.classList.remove("focused");
+    nextInput.classList.add("focused");
+    console.log("focused");
   }
   if (e.key === "Escape") {
+    formElement.classList.remove("focused");
     currentElement.blur();
   }
 };
@@ -1105,7 +1131,8 @@ const submitProject = (
   headerDescription,
   headerDescriptionInput,
   activeProject,
-  activeProjectElement
+  activeProjectElement,
+  taskArray
 ) => {
   // Actively updates the projectArray and the headerTitle on keyup.
   projectForm.addEventListener("keyup", (e) => {
@@ -1123,22 +1150,35 @@ const submitProject = (
     headerDescription.value = "LOL";
   });
 
+  // 99
+  // Further, make it so that when the user cycles through the projects using enter (submit) the approriate tasks are loaded and shown.
+  // Might need to get access to showTasks() from addTask.js for the latter.
+
   projectForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     // Find the element in the array that has the same ID as the DOM project element and set its title to the array input title.
     (0,_findElement__WEBPACK_IMPORTED_MODULE_0__.findElement)(projectArray, projectForm).title = projectInput.value;
 
+    // const match = projectArray.find((element) => element.id === activeProject);
+    // // The line below sets the projectLink to match the projectArray's taskLink.
+
+    // let projectLink = match.taskLink;
+
     projectInput.addEventListener("keyup", (e) => {
       (0,_focusSelector__WEBPACK_IMPORTED_MODULE_1__.focusSelector)(e, projectOptions, projectInput, projectForm);
     });
-
+    console.log(activeProject);
     for (let i = 0; i < projectOptions.children.length; i++) {
       if (projectOptions.childNodes[i].id === activeProjectElement.id && i + 1 !== projectOptions.children.length) {
-        return (headerTitle.value = projectOptions.childNodes[i + 1].querySelector("input").value);
+        return [
+          (headerTitle.value = projectOptions.childNodes[i + 1].querySelector("input").value),
+          // (activeProject = projectOptions.childNodes[i + 1].id),
+        ];
       }
       if (i + 1 === projectOptions.children.length) {
         headerTitle.value = projectOptions.childNodes[0].querySelector("input").value;
+        // activeProject = projectOptions.childNodes[0].id;
       }
     }
   });
