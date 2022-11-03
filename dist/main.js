@@ -178,116 +178,6 @@ function validate(uuid) {
 
 /***/ }),
 
-/***/ "./src/addProject.js":
-/*!***************************!*\
-  !*** ./src/addProject.js ***!
-  \***************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "projectAdd": () => (/* binding */ projectAdd)
-/* harmony export */ });
-/* harmony import */ var _submitProject__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./submitProject */ "./src/submitProject.js");
-/* harmony import */ var _deleteProject__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./deleteProject */ "./src/deleteProject.js");
-/* harmony import */ var _addProjectDom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./addProjectDom */ "./src/addProjectDom.js");
-/* harmony import */ var _removeAllChildNodes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./removeAllChildNodes */ "./src/removeAllChildNodes.js");
-/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
-/* harmony import */ var _findElement__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./findElement */ "./src/findElement.js");
-
-
-
-
-
-
-
-const projectAdd = (
-  projectArray,
-  projectOptions,
-  headerTitle,
-  projectHeaderTitle,
-  headerDescription,
-  headerDescriptionInput,
-  activeProject,
-  activeProjectElement,
-  taskArray,
-  tasks,
-  CreateProject
-) => {
-  const addProjectDomReturn = (0,_addProjectDom__WEBPACK_IMPORTED_MODULE_2__.addProjectDom)();
-  const projectForm = addProjectDomReturn[0];
-  const projectDelete = addProjectDomReturn[1];
-  const projectInput = addProjectDomReturn[2];
-  projectInput.focus();
-
-  const createProject = new CreateProject(
-    projectForm.id,
-    projectInput.value,
-    (0,uuid__WEBPACK_IMPORTED_MODULE_5__["default"])(),
-    projectHeaderTitle,
-    headerDescriptionInput.value
-  );
-
-  projectArray = [...projectArray, createProject];
-
-  // Ensures that new tasks are added to the new project that's just been added.
-  activeProject = (0,_findElement__WEBPACK_IMPORTED_MODULE_4__.findElement)(projectArray, createProject).id;
-  // Set activeProjectElement to the new project.
-  activeProjectElement = (0,_findElement__WEBPACK_IMPORTED_MODULE_4__.findElement)(projectArray, createProject);
-
-  (0,_submitProject__WEBPACK_IMPORTED_MODULE_0__.submitProject)(
-    projectForm,
-    projectInput,
-    projectArray,
-    projectOptions,
-    headerTitle,
-    headerDescription,
-    headerDescriptionInput
-    // activeProject,
-    // activeProjectElement
-  );
-
-  projectDelete.addEventListener("click", (e) => {
-    (0,_deleteProject__WEBPACK_IMPORTED_MODULE_1__.deleteProject)(e, projectArray, taskArray, activeProject, activeProjectElement, projectForm, projectOptions);
-  });
-
-  // Removes all the tasks from the display to show the new and empty project.
-  (0,_removeAllChildNodes__WEBPACK_IMPORTED_MODULE_3__.removeAllChildNodes)(tasks);
-
-  projectForm.addEventListener("click", (e) => {
-    console.table(projectArray);
-    console.table(taskArray);
-
-    activeProject = e.currentTarget.id;
-
-    (0,_removeAllChildNodes__WEBPACK_IMPORTED_MODULE_3__.removeAllChildNodes)(tasks);
-
-    headerTitle.value = projectInput.value;
-
-    console.log(activeProject);
-    projectArray.forEach((arrayItem) => {
-      if (arrayItem.id === activeProject) {
-        activeProjectElement = arrayItem;
-      }
-    });
-    // console.table(taskArray);
-    // console.table(projectArray);
-    taskArray.forEach((arrayItem) => {
-      if (arrayItem.projectLink === activeProjectElement.taskLink) {
-        // console.log("lol");
-        // Rebuild and append all the tasks/todos using the properties stored in the taskArray.
-        showTasks(arrayItem);
-      }
-    });
-    projectInput.focus();
-  });
-
-  return [projectArray, activeProject, activeProjectElement];
-};
-
-
-/***/ }),
-
 /***/ "./src/addProjectDom.js":
 /*!******************************!*\
   !*** ./src/addProjectDom.js ***!
@@ -336,7 +226,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "addTaskName": () => (/* binding */ addTaskName)
 /* harmony export */ });
-/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
+/* harmony import */ var uuid__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! uuid */ "./node_modules/uuid/dist/esm-browser/v4.js");
 /* harmony import */ var _initialDom_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./initialDom.js */ "./src/initialDom.js");
 /* harmony import */ var _addProjectDom_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./addProjectDom.js */ "./src/addProjectDom.js");
 /* harmony import */ var _addTaskDom_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./addTaskDom.js */ "./src/addTaskDom.js");
@@ -348,7 +238,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./removeAllChildNodes.js */ "./src/removeAllChildNodes.js");
 /* harmony import */ var _taskSubmit_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./taskSubmit.js */ "./src/taskSubmit.js");
 /* harmony import */ var _taskDelete_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./taskDelete.js */ "./src/taskDelete.js");
-/* harmony import */ var _addProject_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./addProject.js */ "./src/addProject.js");
+/* harmony import */ var _showTasks_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./showTasks.js */ "./src/showTasks.js");
+/* harmony import */ var _submitHeaderTitle_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./submitHeaderTitle.js */ "./src/submitHeaderTitle.js");
+
 
 
 
@@ -389,49 +281,32 @@ function addTaskName() {
   // Declares array that holds all the projects.
   let projectArray = [];
 
-  const showTasks = (arrayItem) => {
-    const addTaskDomReturn = (0,_addTaskDom_js__WEBPACK_IMPORTED_MODULE_2__.addTaskDom)();
-    const taskBox = addTaskDomReturn[0];
-    const taskCheck = addTaskDomReturn[1];
-    const task = addTaskDomReturn[2];
-    const colour = addTaskDomReturn[3];
-    const deleteTask = addTaskDomReturn[4];
-    const taskText = addTaskDomReturn[5];
+  // activeProject is the projectForm's id element.
+  let activeProject = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.id;
+  // activeProjectElement is the arrayItem with a matching id of activeProject.
+  let activeProjectElement = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[0];
 
-    taskText.value = arrayItem.title;
-    if (arrayItem.done === true) {
-      taskCheck.classList.add("checked");
-      taskBox.classList.add("opacity");
-    }
-    taskCheck.addEventListener("click", (e) => {
-      taskCheckClicked(taskCheck, taskBox, taskArray);
-    });
+  let projectHeaderTitle;
 
-    taskText.focus();
+  // Creates the initial example project from the CreateProject class.
+  const createProject = new CreateProject(
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.id,
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectInput.value,
+    (0,uuid__WEBPACK_IMPORTED_MODULE_13__["default"])(),
+    projectHeaderTitle,
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value
+  );
 
-    // Set taskBox DOM element id to match its corresponding taskArray id.
-    taskBox.setAttribute("id", arrayItem.id);
-    // Set taskBox DOM element background colour to match its corresponding taskArray colour.
-    taskBox.style.backgroundColor = arrayItem.colour;
-    // Listen for colour updates
-    colour.addEventListener("input", (e) => {
-      (0,_updateColour_js__WEBPACK_IMPORTED_MODULE_7__.updateColour)(colour, taskBox, taskArray);
-    });
+  // Adds the first project to the project array.
+  projectArray = [...projectArray, createProject];
 
-    // Updates the task's title in the array.
-    task.addEventListener("submit", (e) => {
-      (0,_taskSubmit_js__WEBPACK_IMPORTED_MODULE_9__.taskSubmit)(e, taskArray, taskBox, taskText, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
-    });
-
-    // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
-    deleteTask.addEventListener("click", (e) => {
-      (0,_taskDelete_js__WEBPACK_IMPORTED_MODULE_10__.taskDelete)(taskArray, taskBox, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
-    });
-
-    task.addEventListener("keydown", (e) => {
-      (0,_findElement_js__WEBPACK_IMPORTED_MODULE_5__.findElement)(taskArray, taskBox).title = taskText.value;
-    });
-  };
+  _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionForm.addEventListener("keyup", (e) => {
+    (0,_findElement_js__WEBPACK_IMPORTED_MODULE_5__.findElement)(projectArray, activeProjectElement).headerDescription = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value;
+  });
+  _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.blur();
+  });
 
   _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.addEventListener("click", (e) => {
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.select();
@@ -445,52 +320,11 @@ function addTaskName() {
     }
   });
 
-  _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.blur();
-    (0,_findElement_js__WEBPACK_IMPORTED_MODULE_5__.findElement)(projectArray, activeProjectElement).title = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.value;
-    for (let i = 0; i < _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.children.length; i++) {
-      if (_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[i].id === activeProjectElement.id) {
-        _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[i].querySelector("input").value = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.value;
-      }
-    }
-  });
-
   _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectDelete.addEventListener("click", (e) => {
     (0,_deleteProject_js__WEBPACK_IMPORTED_MODULE_4__.deleteProject)(e, projectArray, taskArray, activeProject, activeProjectElement, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions);
   });
 
-  let projectHeaderTitle = "bruh";
-
-  _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescription.addEventListener("submit", (e) => {
-    e.preventDefault();
-    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.blur();
-    console.table(projectArray);
-    // 99 push this value into the projectArray and update array on keydown and submit.
-    (0,_findElement_js__WEBPACK_IMPORTED_MODULE_5__.findElement)(projectArray, activeProjectElement).headerDescription = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value;
-    console.table(projectArray);
-  });
-
-  _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescription.addEventListener("keydown", (e) => {
-    (0,_findElement_js__WEBPACK_IMPORTED_MODULE_5__.findElement)(projectArray, activeProjectElement).headerDescription = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value;
-  });
-
-  // Creates the initial example project from the CreateProject class.
-  const createProject = new CreateProject(
-    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.id,
-    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectInput.value,
-    (0,uuid__WEBPACK_IMPORTED_MODULE_12__["default"])(),
-    projectHeaderTitle,
-    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value
-  );
-
-  // Adds the first project to the project array.
-  projectArray = [...projectArray, createProject];
-
-  // activeProject is the projectForm's id element.
-  let activeProject = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.id;
-  // activeProjectElement is the arrayItem with a matching id of activeProject.
-  let activeProjectElement = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[0];
+  (0,_submitHeaderTitle_js__WEBPACK_IMPORTED_MODULE_12__.submitHeaderTitle)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleForm, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle, projectArray, activeProjectElement, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions);
 
   (0,_submitProject_js__WEBPACK_IMPORTED_MODULE_6__.submitProject)(
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm,
@@ -498,11 +332,12 @@ function addTaskName() {
     projectArray,
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions,
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle,
-    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescription,
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionForm,
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput,
     activeProject,
     activeProjectElement,
-    taskArray
+    taskArray,
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks
   );
 
   _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.addEventListener("click", (e) => {
@@ -513,10 +348,12 @@ function addTaskName() {
 
     activeProject = e.currentTarget.id;
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.classList.add("focused");
-
+    activeProjectElement = e.currentTarget;
     (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_8__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
 
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.value = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectInput.value;
+    activeProjectElement = e.currentTarget;
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value = (0,_findElement_js__WEBPACK_IMPORTED_MODULE_5__.findElement)(projectArray, activeProjectElement).headerDescription;
 
     projectArray.forEach((arrayItem) => {
       if (arrayItem.id === activeProject) {
@@ -526,7 +363,7 @@ function addTaskName() {
     taskArray.forEach((arrayItem) => {
       if (arrayItem.projectLink === activeProjectElement.taskLink) {
         // Rebuild and append all the tasks/todos using the properties stored in the taskArray.
-        showTasks(arrayItem);
+        (0,_showTasks_js__WEBPACK_IMPORTED_MODULE_11__.showTasks)(arrayItem, taskCheckClicked, taskArray, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
       }
     });
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectInput.focus();
@@ -539,10 +376,13 @@ function addTaskName() {
     const projectInput = addProjectDomReturn[2];
     projectInput.focus();
 
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.value = "";
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value = "";
+
     const createProject = new CreateProject(
       projectForm.id,
       projectInput.value,
-      (0,uuid__WEBPACK_IMPORTED_MODULE_12__["default"])(),
+      (0,uuid__WEBPACK_IMPORTED_MODULE_13__["default"])(),
       projectHeaderTitle,
       _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value
     );
@@ -560,11 +400,12 @@ function addTaskName() {
       projectArray,
       _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions,
       _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle,
-      _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescription,
+      _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionForm,
       _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput,
       activeProject,
       activeProjectElement,
-      taskArray
+      taskArray,
+      _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks
     );
 
     projectDelete.addEventListener("click", (e) => {
@@ -579,29 +420,27 @@ function addTaskName() {
         _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[i].classList.remove("focused");
       }
       projectForm.classList.add("focused");
-
       activeProject = e.currentTarget.id;
-
       (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_8__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
-
       _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.value = projectInput.value;
 
-      console.log(activeProject);
+      activeProjectElement = e.currentTarget;
+      _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value = (0,_findElement_js__WEBPACK_IMPORTED_MODULE_5__.findElement)(projectArray, activeProjectElement).headerDescription;
+
       projectArray.forEach((arrayItem) => {
         if (arrayItem.id === activeProject) {
           activeProjectElement = arrayItem;
         }
       });
-
       taskArray.forEach((arrayItem) => {
         if (arrayItem.projectLink === activeProjectElement.taskLink) {
-          // console.log("lol");
           // Rebuild and append all the tasks/todos using the properties stored in the taskArray.
-          showTasks(arrayItem);
+          (0,_showTasks_js__WEBPACK_IMPORTED_MODULE_11__.showTasks)(arrayItem, taskCheckClicked, taskArray, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
         }
       });
       projectInput.focus();
     });
+    console.table(projectArray);
   });
 
   const taskCheckClicked = (taskCheck, taskBox, taskArray) => {
@@ -628,7 +467,7 @@ function addTaskName() {
     const deleteTask = addTaskDomReturn[4];
     const taskText = addTaskDomReturn[5];
 
-    let taskId = (0,uuid__WEBPACK_IMPORTED_MODULE_12__["default"])();
+    let taskId = (0,uuid__WEBPACK_IMPORTED_MODULE_13__["default"])();
     taskBox.setAttribute("id", taskId);
 
     // Sets activeProject based on which project contains the class "focused"
@@ -642,7 +481,6 @@ function addTaskName() {
     // The line below sets the projectLink to match the projectArray's taskLink.
 
     let projectLink = match.taskLink;
-    console.log(activeProject);
     const createTask = new CreateTask(taskBox.id, taskText.value, taskBox.style.backgroundColor, false, projectLink);
     taskArray = [...taskArray, createTask];
     taskText.focus();
@@ -668,6 +506,20 @@ function addTaskName() {
     deleteTask.addEventListener("click", (e) => {
       (0,_taskDelete_js__WEBPACK_IMPORTED_MODULE_10__.taskDelete)(taskArray, taskBox, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
     });
+    console.table(taskArray);
+  });
+
+  _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.calendarToday.addEventListener("click", (e) => {
+    console.log("Calendar today!");
+    (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_8__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
+  });
+  _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.calendarWeek.addEventListener("click", (e) => {
+    console.log("Calendar week!");
+    (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_8__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
+  });
+  _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.calendarTitle.addEventListener("click", (e) => {
+    console.log("Calendar!");
+    (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_8__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
   });
 }
 
@@ -735,16 +587,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "deleteProject": () => (/* binding */ deleteProject)
 /* harmony export */ });
-/* harmony import */ var _removeAllChildNodes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./removeAllChildNodes */ "./src/removeAllChildNodes.js");
+/* harmony import */ var _findElement__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./findElement */ "./src/findElement.js");
 
-
-const findElement = (targetArray, targetMatch) => {
-  return targetArray.find((arrayItem) => {
-    if (arrayItem.id === targetMatch.id) {
-      return arrayItem;
-    }
-  });
-};
 
 const deleteProject = (
   e,
@@ -757,7 +601,6 @@ const deleteProject = (
 ) => {
   let removeArray = [];
 
-  console.log(activeProject);
   const activeProjectBefore = activeProject;
   // Sets activeProject to the delete-clicked form's id and activeProjectElement to the matching arrayItem.
   // Identifies which projectDelete DOM form was clicked compared to the projectArray.
@@ -767,8 +610,6 @@ const deleteProject = (
       activeProjectElement = arrayItem;
     }
   });
-  //   Use activeProject and find the matching element taskBox and focus that one
-
   // Loops over taskArray and checks if the arrayItem's match the activeProjectElement's taskLink.
   taskArray.forEach((arrayItem) => {
     if (arrayItem.projectLink === activeProjectElement.taskLink) {
@@ -776,12 +617,6 @@ const deleteProject = (
       removeArray.push(taskIndex);
     }
   });
-
-  // if (projectArray.length === 1) {
-  //   removeAllChildNodes(projectArray);
-  //   removeAllChildNodes(taskArray);
-  //   console.log("lol");
-  // }
 
   if (activeProjectBefore === e.currentTarget.parentNode.id) {
     const parent = e.currentTarget.parentNode;
@@ -798,31 +633,21 @@ const deleteProject = (
     // Error when keep on deleting projects after having done the first one. Look into this. 99
     const projectOptionsChildren = [...projectOptions.children];
     // currentActiveProject is not set on the second time around.
-    console.log(currentActiveProject);
     const focusThis = projectOptionsChildren.find((element) => element.id === currentActiveProject.id);
-    console.log(focusThis);
     focusThis.querySelector("input").focus();
   }
 
-  //   console.table(removeArray);
   for (let i = removeArray.length - 1; i >= 0; i--) {
     taskArray.splice(removeArray[i], 1);
   }
   // Find the index of the project in projectArray that has the same ID as the DOM project element.
-  const projectIndex = projectArray.indexOf(findElement(projectArray, projectForm));
+  const projectIndex = projectArray.indexOf((0,_findElement__WEBPACK_IMPORTED_MODULE_0__.findElement)(projectArray, projectForm));
   // Removes the respective element in the array using the DOM elements' id.
   projectArray.splice(projectIndex, 1);
   //   Removes the entire project(form) from the DOM.
   projectOptions.removeChild(projectForm);
-
-  //   console.log("Project Array:");
-  console.table(projectArray);
-  //   console.log("Task Array:");
-  console.table(taskArray);
-  console.log(activeProject);
-
-  //   console.log(activeProject);
-  //   console.log(activeProjectElement);
+  activeProject = projectArray[projectIndex].id;
+  return [activeProject];
 };
 
 
@@ -915,7 +740,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "contentSeparator3": () => (/* binding */ contentSeparator3),
 /* harmony export */   "editProjects": () => (/* binding */ editProjects),
 /* harmony export */   "header": () => (/* binding */ header),
-/* harmony export */   "headerDescription": () => (/* binding */ headerDescription),
+/* harmony export */   "headerDescriptionForm": () => (/* binding */ headerDescriptionForm),
 /* harmony export */   "headerDescriptionInput": () => (/* binding */ headerDescriptionInput),
 /* harmony export */   "headerTitle": () => (/* binding */ headerTitle),
 /* harmony export */   "headerTitleEdit": () => (/* binding */ headerTitleEdit),
@@ -1060,14 +885,14 @@ headerTitleEdit.classList.add("headerTitleEdit");
 headerTitleEdit.textContent = "Edit";
 headerTitleWrapper.appendChild(headerTitleEdit);
 
-const headerDescription = document.createElement("form");
-headerDescription.classList.add("headerDescription");
-header.appendChild(headerDescription);
+const headerDescriptionForm = document.createElement("form");
+headerDescriptionForm.classList.add("headerDescription");
+header.appendChild(headerDescriptionForm);
 
 const headerDescriptionInput = document.createElement("input");
 headerDescriptionInput.classList.add("headerDescriptionInput");
 headerDescriptionInput.setAttribute("placeholder", "Project Description");
-headerDescription.appendChild(headerDescriptionInput);
+headerDescriptionForm.appendChild(headerDescriptionInput);
 
 const contentSeparator3 = document.createElement("div");
 contentSeparator3.classList.add("contentSeparator");
@@ -1105,6 +930,104 @@ const removeAllChildNodes = (parent) => {
 
 /***/ }),
 
+/***/ "./src/showTasks.js":
+/*!**************************!*\
+  !*** ./src/showTasks.js ***!
+  \**************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "showTasks": () => (/* binding */ showTasks)
+/* harmony export */ });
+/* harmony import */ var _updateColour__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./updateColour */ "./src/updateColour.js");
+/* harmony import */ var _taskSubmit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./taskSubmit */ "./src/taskSubmit.js");
+/* harmony import */ var _taskDelete__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./taskDelete */ "./src/taskDelete.js");
+/* harmony import */ var _findElement__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./findElement */ "./src/findElement.js");
+/* harmony import */ var _addTaskDom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./addTaskDom */ "./src/addTaskDom.js");
+
+
+
+
+
+
+const showTasks = (arrayItem, taskCheckClicked, taskArray, tasks) => {
+  const addTaskDomReturn = (0,_addTaskDom__WEBPACK_IMPORTED_MODULE_4__.addTaskDom)();
+  const taskBox = addTaskDomReturn[0];
+  const taskCheck = addTaskDomReturn[1];
+  const task = addTaskDomReturn[2];
+  const colour = addTaskDomReturn[3];
+  const deleteTask = addTaskDomReturn[4];
+  const taskText = addTaskDomReturn[5];
+
+  taskText.value = arrayItem.title;
+  if (arrayItem.done === true) {
+    taskCheck.classList.add("checked");
+    taskBox.classList.add("opacity");
+  }
+  taskCheck.addEventListener("click", (e) => {
+    taskCheckClicked(taskCheck, taskBox, taskArray);
+  });
+
+  taskText.focus();
+
+  // Set taskBox DOM element id to match its corresponding taskArray id.
+  taskBox.setAttribute("id", arrayItem.id);
+  // Set taskBox DOM element background colour to match its corresponding taskArray colour.
+  taskBox.style.backgroundColor = arrayItem.colour;
+  // Listen for colour updates
+  colour.addEventListener("input", (e) => {
+    (0,_updateColour__WEBPACK_IMPORTED_MODULE_0__.updateColour)(colour, taskBox, taskArray);
+  });
+
+  // Updates the task's title in the array.
+  task.addEventListener("submit", (e) => {
+    e.preventDefault();
+    (0,_taskSubmit__WEBPACK_IMPORTED_MODULE_1__.taskSubmit)(e, taskArray, taskBox, taskText, tasks);
+  });
+
+  // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
+  deleteTask.addEventListener("click", (e) => {
+    (0,_taskDelete__WEBPACK_IMPORTED_MODULE_2__.taskDelete)(taskArray, taskBox, tasks);
+  });
+
+  task.addEventListener("keydown", (e) => {
+    (0,_findElement__WEBPACK_IMPORTED_MODULE_3__.findElement)(taskArray, taskBox).title = taskText.value;
+  });
+};
+
+
+/***/ }),
+
+/***/ "./src/submitHeaderTitle.js":
+/*!**********************************!*\
+  !*** ./src/submitHeaderTitle.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "submitHeaderTitle": () => (/* binding */ submitHeaderTitle)
+/* harmony export */ });
+/* harmony import */ var _findElement__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./findElement */ "./src/findElement.js");
+
+
+const submitHeaderTitle = (headerTitleForm, headerTitle, projectArray, activeProjectElement, projectOptions) => {
+  headerTitleForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    headerTitle.blur();
+    (0,_findElement__WEBPACK_IMPORTED_MODULE_0__.findElement)(projectArray, activeProjectElement).title = headerTitle.value;
+    // for (let i = 0; i < projectOptions.children.length; i++) {
+    //   if (projectOptions.childNodes[i].id === activeProjectElement.id) {
+    //     projectOptions.childNodes[i].querySelector("input").value = headerTitle.value;
+    //   }
+    // }
+  });
+};
+
+
+/***/ }),
+
 /***/ "./src/submitProject.js":
 /*!******************************!*\
   !*** ./src/submitProject.js ***!
@@ -1116,11 +1039,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "submitProject": () => (/* binding */ submitProject)
 /* harmony export */ });
 /* harmony import */ var _findElement__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./findElement */ "./src/findElement.js");
-/* harmony import */ var _focusSelector__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./focusSelector */ "./src/focusSelector.js");
-/* harmony import */ var _initialDom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./initialDom */ "./src/initialDom.js");
 
-
-
+// import { focusSelector } from "./focusSelector";
+// import { showTasks } from "./showTasks";
+// import { removeAllChildNodes } from "./removeAllChildNodes";
 
 const submitProject = (
   projectForm,
@@ -1132,7 +1054,8 @@ const submitProject = (
   headerDescriptionInput,
   activeProject,
   activeProjectElement,
-  taskArray
+  taskArray,
+  tasks
 ) => {
   // Actively updates the projectArray and the headerTitle on keyup.
   projectForm.addEventListener("keyup", (e) => {
@@ -1144,43 +1067,38 @@ const submitProject = (
     }
   });
 
-  headerDescription.addEventListener("keyup", (e) => {
-    (0,_findElement__WEBPACK_IMPORTED_MODULE_0__.findElement)(projectArray, headerDescriptionInput).headerDescription = headerDescriptionInput.value;
-    // Updates the headerTitle to match the projectInput name.
-    headerDescription.value = "LOL";
+  projectForm.addEventListener("keydown", (e) => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+    }
   });
-
-  // 99
-  // Further, make it so that when the user cycles through the projects using enter (submit) the approriate tasks are loaded and shown.
-  // Might need to get access to showTasks() from addTask.js for the latter.
 
   projectForm.addEventListener("submit", (e) => {
     e.preventDefault();
-
     // Find the element in the array that has the same ID as the DOM project element and set its title to the array input title.
     (0,_findElement__WEBPACK_IMPORTED_MODULE_0__.findElement)(projectArray, projectForm).title = projectInput.value;
+    projectInput.blur();
 
     // const match = projectArray.find((element) => element.id === activeProject);
-    // // The line below sets the projectLink to match the projectArray's taskLink.
-
+    // The line below sets the projectLink to match the projectArray's taskLink.
     // let projectLink = match.taskLink;
 
-    projectInput.addEventListener("keyup", (e) => {
-      (0,_focusSelector__WEBPACK_IMPORTED_MODULE_1__.focusSelector)(e, projectOptions, projectInput, projectForm);
-    });
-    console.log(activeProject);
-    for (let i = 0; i < projectOptions.children.length; i++) {
-      if (projectOptions.childNodes[i].id === activeProjectElement.id && i + 1 !== projectOptions.children.length) {
-        return [
-          (headerTitle.value = projectOptions.childNodes[i + 1].querySelector("input").value),
-          // (activeProject = projectOptions.childNodes[i + 1].id),
-        ];
-      }
-      if (i + 1 === projectOptions.children.length) {
-        headerTitle.value = projectOptions.childNodes[0].querySelector("input").value;
-        // activeProject = projectOptions.childNodes[0].id;
-      }
-    }
+    // Allows for cycling through projects upon pressing "Enter":
+    // projectInput.addEventListener("keyup", (e) => {
+    //   focusSelector(e, projectOptions, projectInput, projectForm);
+    // });
+    // for (let i = 0; i < projectOptions.children.length; i++) {
+    //   if (projectOptions.childNodes[i].id === activeProjectElement.id && i + 1 !== projectOptions.children.length) {
+    //     return [
+    //       (headerTitle.value = projectOptions.childNodes[i + 1].querySelector("input").value),
+    //       // (activeProject = projectOptions.childNodes[i + 1].id),
+    //     ];
+    //   }
+    //   if (i + 1 === projectOptions.children.length) {
+    //     headerTitle.value = projectOptions.childNodes[0].querySelector("input").value;
+    //     // activeProject = projectOptions.childNodes[0].id;
+    //   }
+    // }
   });
 };
 

@@ -124,14 +124,14 @@ headerTitleEdit.classList.add("headerTitleEdit");
 headerTitleEdit.textContent = "Edit";
 headerTitleWrapper.appendChild(headerTitleEdit);
 
-export const headerDescription = document.createElement("form");
-headerDescription.classList.add("headerDescription");
-header.appendChild(headerDescription);
+export const headerDescriptionForm = document.createElement("form");
+headerDescriptionForm.classList.add("headerDescription");
+header.appendChild(headerDescriptionForm);
 
 export const headerDescriptionInput = document.createElement("input");
 headerDescriptionInput.classList.add("headerDescriptionInput");
 headerDescriptionInput.setAttribute("placeholder", "Project Description");
-headerDescription.appendChild(headerDescriptionInput);
+headerDescriptionForm.appendChild(headerDescriptionInput);
 
 export const contentSeparator3 = document.createElement("div");
 contentSeparator3.classList.add("contentSeparator");
