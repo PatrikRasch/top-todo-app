@@ -37,14 +37,14 @@ calendarToday.textContent = "Today";
 calendarOptions.appendChild(calendarToday);
 
 export const calendarWeek = document.createElement("div");
-calendarWeek.classList.add("calendarWeek");
-calendarWeek.textContent = "This Week";
+calendarWeek.classList.add("allTasks");
+calendarWeek.textContent = "All Tasks";
 calendarOptions.appendChild(calendarWeek);
 
-export const calendarTitle = document.createElement("div");
-calendarTitle.classList.add("calendarTitle");
-calendarTitle.textContent = "Calendar";
-calendarOptions.appendChild(calendarTitle);
+// export const calendarTitle = document.createElement("div");
+// calendarTitle.classList.add("calendarTitle");
+// calendarTitle.textContent = "Calendar";
+// calendarOptions.appendChild(calendarTitle);
 
 export const projects = document.createElement("div");
 projects.classList.add("projects");

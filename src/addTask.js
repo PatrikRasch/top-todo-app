@@ -8,7 +8,7 @@ import {
   calendarOptions,
   calendarToday,
   calendarWeek,
-  calendarTitle,
+  // calendarTitle,
   projects,
   projectsHeader,
   projectsTopLine,
@@ -35,6 +35,7 @@ import {
 
 import { addProjectDom } from "./addProjectDom.js";
 import { addTaskDom } from "./addTaskDom.js";
+import { addTaskDomCalendar } from "./addTaskDomCalendar.js";
 import { focusSelector } from "./focusSelector.js";
 import { deleteProject } from "./deleteProject.js";
 import { findElement } from "./findElement.js";
@@ -45,6 +46,7 @@ import { taskSubmit } from "./taskSubmit.js";
 import { taskDelete } from "./taskDelete.js";
 import { showTasks } from "./showTasks.js";
 import { submitHeaderTitle } from "./submitHeaderTitle.js";
+import { format } from "date-fns";
 
 export function addTaskName() {
   class CreateProject {
@@ -66,10 +68,22 @@ export function addTaskName() {
     }
   }
 
+  class DueTask {
+    constructor(id, title, colour, done, dueDate) {
+      this.id = id;
+      this.title = title;
+      this.colour = colour;
+      this.done = done;
+      this.dueDate = dueDate;
+    }
+  }
+
   // Declare the array that holds all the tasks/todos.
   let taskArray = [];
   // Declares array that holds all the projects.
   let projectArray = [];
+  // Declares array that holds all tasks with due dates.
+  let dueArray = [];
 
   // activeProject is the projectForm's id element.
   let activeProject = projectForm.id;
@@ -111,6 +125,9 @@ export function addTaskName() {
   });
 
   projectDelete.addEventListener("click", (e) => {
+    const clickedProject = e.currentTarget.parentElement;
+    activeProjectElement = findElement(projectArray, clickedProject);
+    activeProject = findElement(projectArray, clickedProject).id;
     deleteProject(e, projectArray, taskArray, activeProject, activeProjectElement, projectForm, projectOptions);
   });
 
@@ -130,7 +147,14 @@ export function addTaskName() {
     tasks
   );
 
+  let setAddTask = true;
+  console.log(setAddTask);
+
   projectForm.addEventListener("click", (e) => {
+    if (setAddTask === false) {
+      removeAllChildNodes(tasks);
+    }
+    setAddTask = true;
     for (let i = 0; i < projectOptions.childNodes.length; i++) {
       projectOptions.childNodes[i].classList.remove("focused");
     }
@@ -153,13 +177,14 @@ export function addTaskName() {
     taskArray.forEach((arrayItem) => {
       if (arrayItem.projectLink === activeProjectElement.taskLink) {
         // Rebuild and append all the tasks/todos using the properties stored in the taskArray.
-        showTasks(arrayItem, taskCheckClicked, taskArray, tasks);
+        showTasks(arrayItem, taskCheckClicked, taskArray, tasks, setAddTask);
       }
     });
     projectInput.focus();
   });
 
   addProject.addEventListener("click", (e) => {
+    setAddTask = true;
     const addProjectDomReturn = addProjectDom();
     const projectForm = addProjectDomReturn[0];
     const projectDelete = addProjectDomReturn[1];
@@ -180,9 +205,13 @@ export function addTaskName() {
     projectArray = [...projectArray, createProject];
 
     // Ensures that new tasks are added to the new project that's just been added.
-    activeProject = findElement(projectArray, createProject).id;
+    // activeProject = findElement(projectArray, createProject).id;
+    // 99 this only works as long as the user doesn't click any of the other projects.
+    activeProject = projectArray[projectArray.length - 1].id;
+    console.log(activeProject);
     // Set activeProjectElement to the new project.
-    activeProjectElement = findElement(projectArray, createProject);
+    activeProjectElement = projectArray[projectArray.length - 1];
+    console.log(activeProjectElement);
 
     submitProject(
       projectForm,
@@ -199,6 +228,9 @@ export function addTaskName() {
     );
 
     projectDelete.addEventListener("click", (e) => {
+      const clickedProject = e.currentTarget.parentElement;
+      activeProjectElement = findElement(projectArray, clickedProject);
+      activeProject = findElement(projectArray, clickedProject).id;
       deleteProject(e, projectArray, taskArray, activeProject, activeProjectElement, projectForm, projectOptions);
     });
 
@@ -206,6 +238,11 @@ export function addTaskName() {
     removeAllChildNodes(tasks);
 
     projectForm.addEventListener("click", (e) => {
+      if (setAddTask === false) {
+        removeAllChildNodes(tasks);
+      }
+      setAddTask = true;
+
       for (let i = 0; i < projectOptions.childNodes.length; i++) {
         projectOptions.childNodes[i].classList.remove("focused");
       }
@@ -225,7 +262,7 @@ export function addTaskName() {
       taskArray.forEach((arrayItem) => {
         if (arrayItem.projectLink === activeProjectElement.taskLink) {
           // Rebuild and append all the tasks/todos using the properties stored in the taskArray.
-          showTasks(arrayItem, taskCheckClicked, taskArray, tasks);
+          showTasks(arrayItem, taskCheckClicked, taskArray, tasks, setAddTask);
         }
       });
       projectInput.focus();
@@ -245,70 +282,121 @@ export function addTaskName() {
     }
   };
 
-  addTask.addEventListener("click", (e) => {
-    if (projectArray.length === 0) {
-      return alert("Make a project first");
-    }
-    const addTaskDomReturn = addTaskDom();
-    const taskBox = addTaskDomReturn[0];
-    const taskCheck = addTaskDomReturn[1];
-    const task = addTaskDomReturn[2];
-    const colour = addTaskDomReturn[3];
-    const deleteTask = addTaskDomReturn[4];
-    const taskText = addTaskDomReturn[5];
+  calendarToday.addEventListener("click", (e) => {
+    setAddTask = false;
+    removeAllChildNodes(tasks);
 
-    let taskId = uuidv4();
-    taskBox.setAttribute("id", taskId);
-
-    // Sets activeProject based on which project contains the class "focused"
-    for (let i = 0; i < projectOptions.childNodes.length; i++) {
-      if (projectOptions.childNodes[i].classList.contains("focused")) {
-        activeProject = projectOptions.childNodes[i].id;
+    const todaysDate = format(new Date(), "yyyy-MM-dd");
+    dueArray.forEach((arrayItem) => {
+      if (arrayItem.dueDate === todaysDate) {
+        // Rebuild and append all the tasks/todos using the properties stored in the taskArray.
+        showTasks(arrayItem, taskCheckClicked, dueArray, tasks, setAddTask);
       }
-    }
-    // Find the first project from projectArray matching with activeProject.
-    const match = projectArray.find((element) => element.id === activeProject);
-    // The line below sets the projectLink to match the projectArray's taskLink.
+    });
+  });
 
-    let projectLink = match.taskLink;
-    const createTask = new CreateTask(taskBox.id, taskText.value, taskBox.style.backgroundColor, false, projectLink);
-    taskArray = [...taskArray, createTask];
-    taskText.focus();
+  calendarWeek.addEventListener("click", (e) => {
+    setAddTask = false;
+    removeAllChildNodes(tasks);
+    dueArray.forEach((arrayItem) => {
+      showTasks(arrayItem, taskCheckClicked, dueArray, tasks, setAddTask);
+    });
+    console.log(setAddTask);
+  });
 
+  const taskFunctionality = (taskCheck, colour, task, deleteTask, taskBox, targetArray, taskText) => {
     taskCheck.addEventListener("click", (e) => {
-      taskCheckClicked(taskCheck, taskBox, taskArray);
+      taskCheckClicked(taskCheck, taskBox, targetArray);
+      console.table(targetArray);
     });
 
     colour.addEventListener("input", (e) => {
-      updateColour(colour, taskBox, taskArray);
+      updateColour(colour, taskBox, targetArray);
+      console.table(targetArray);
     });
 
-    task.addEventListener("keydown", (e) => {
-      findElement(taskArray, taskBox).title = taskText.value;
+    task.addEventListener("keyup", (e) => {
+      findElement(targetArray, taskBox).title = taskText.value;
     });
 
     // Updates the task's properties in the array.
     task.addEventListener("submit", (e) => {
-      taskSubmit(e, taskArray, taskBox, taskText, tasks);
+      taskSubmit(e, targetArray, taskBox, taskText, tasks);
+      console.table(targetArray);
     });
+  };
 
-    // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
-    deleteTask.addEventListener("click", (e) => {
-      taskDelete(taskArray, taskBox, tasks);
-    });
-    console.table(taskArray);
-  });
+  addTask.addEventListener("click", (e) => {
+    if (setAddTask === false) {
+      const addTaskDomCalendarReturn = addTaskDomCalendar();
+      const taskBox = addTaskDomCalendarReturn[0];
+      const taskCheck = addTaskDomCalendarReturn[1];
+      const task = addTaskDomCalendarReturn[2];
+      const dueForm = addTaskDomCalendarReturn[3];
+      const dueInput = addTaskDomCalendarReturn[4];
+      const colour = addTaskDomCalendarReturn[5];
+      const deleteTask = addTaskDomCalendarReturn[6];
+      const taskText = addTaskDomCalendarReturn[7];
 
-  calendarToday.addEventListener("click", (e) => {
-    console.log("Calendar today!");
-    removeAllChildNodes(tasks);
-  });
-  calendarWeek.addEventListener("click", (e) => {
-    console.log("Calendar week!");
-    removeAllChildNodes(tasks);
-  });
-  calendarTitle.addEventListener("click", (e) => {
-    console.log("Calendar!");
-    removeAllChildNodes(tasks);
+      let taskId = uuidv4();
+      taskBox.setAttribute("id", taskId);
+
+      const dueTask = new DueTask(taskBox.id, taskText.value, taskBox.style.backgroundColor, false, dueInput.value);
+      dueArray = [...dueArray, dueTask];
+      console.table(dueArray);
+
+      dueForm.addEventListener("click", (e) => {
+        dueInput.select();
+        dueInput.addEventListener("keyup", (e) => {
+          const clickedForm = e.currentTarget.parentElement;
+          const clickedDate = clickedForm.parentElement;
+          findElement(dueArray, clickedDate).dueDate = dueInput.value;
+          if (e.key === "Enter") {
+            dueInput.blur();
+          }
+        });
+      });
+      taskFunctionality(taskCheck, colour, task, deleteTask, taskBox, dueArray, taskText);
+      // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
+      deleteTask.addEventListener("click", (e) => {
+        taskDelete(dueArray, taskBox, tasks);
+      });
+    }
+    if (setAddTask === true) {
+      if (projectArray.length === 0) {
+        return alert("Make a project first");
+      }
+      const addTaskDomReturn = addTaskDom();
+      const taskBox = addTaskDomReturn[0];
+      const taskCheck = addTaskDomReturn[1];
+      const task = addTaskDomReturn[2];
+      const colour = addTaskDomReturn[3];
+      const deleteTask = addTaskDomReturn[4];
+      const taskText = addTaskDomReturn[5];
+
+      let taskId = uuidv4();
+      taskBox.setAttribute("id", taskId);
+
+      // Sets activeProject based on which project contains the class "focused"
+      for (let i = 0; i < projectOptions.childNodes.length; i++) {
+        if (projectOptions.childNodes[i].classList.contains("focused")) {
+          activeProject = projectOptions.childNodes[i].id;
+        }
+      }
+      // Find the first project from projectArray matching with activeProject.
+      const match = projectArray.find((element) => element.id === activeProject);
+      // The line below sets the projectLink to match the projectArray's taskLink.
+
+      let projectLink = match.taskLink;
+      const createTask = new CreateTask(taskBox.id, taskText.value, taskBox.style.backgroundColor, false, projectLink);
+      taskArray = [...taskArray, createTask];
+      taskText.focus();
+      taskFunctionality(taskCheck, colour, task, deleteTask, taskBox, taskArray, taskText);
+      // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
+      deleteTask.addEventListener("click", (e) => {
+        taskDelete(taskArray, taskBox, tasks);
+        console.table(targetArray);
+      });
+    }
   });
 }

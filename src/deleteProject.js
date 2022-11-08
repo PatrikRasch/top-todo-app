@@ -30,10 +30,12 @@ export const deleteProject = (
 
   if (activeProjectBefore === e.currentTarget.parentNode.id) {
     const parent = e.currentTarget.parentNode;
-    if (projectOptions.children.length > 1) {
-      const nextInput = parent.nextElementSibling.querySelector("input");
-      nextInput.focus();
-    }
+    // This focuses the next project below the deleted one. Commented out because it causes issues when deleting the bottom project.
+    // cba to fix, not an important feature. Additionally, it would require a lot of extra work for loading correct tasks without user click.
+    // if (projectOptions.children.length > 1) {
+    //   const nextInput = parent.nextElementSibling.querySelector("input");
+    //   nextInput.focus();
+    // }
   } else {
     const currentActiveProject = projectArray.find((arrayItem) => {
       if (arrayItem.id === activeProjectBefore) {

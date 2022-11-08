@@ -22,6 +22,10 @@ body {
   src: url(../fonts/Satoshi-Bold.otf);
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
 .wrapper {
   display: grid;
   grid-template-columns: 2fr 8fr;
@@ -62,21 +66,21 @@ body {
 }
 
 .calendarToday,
-.calendarWeek,
+.allTasks,
 .calendarTitle {
   align-self: center;
   padding: 10px;
 }
 
 .calendarToday,
-.calendarWeek,
+.allTasks,
 .calendarTitle {
   font-size: 30px;
   cursor: pointer;
 }
 
 .calendarToday:hover,
-.calendarWeek:hover,
+.allTasks:hover,
 .calendarTitle:hover {
   background-color: #222831;
   border-radius: 5px;
@@ -230,6 +234,25 @@ body {
   padding-left: 20px;
   background-color: transparent;
   color: white;
+}
+
+.taskBoxDue {
+  font-size: 24px;
+  border: 2px solid grey;
+  display: grid;
+  grid-template-columns: 50px 10fr 120px 40px 50px;
+  align-items: center;
+  border-radius: 10px;
+  padding-left: 20px;
+  background-color: transparent;
+  color: white;
+}
+
+.due {
+  width: 120px;
+  font-size: 20px;
+  cursor: pointer;
+  overflow: hidden;
 }
 
 .colour {
