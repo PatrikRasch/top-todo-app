@@ -350,6 +350,9 @@ export function addTaskName() {
     });
 
     task.addEventListener("keyup", (e) => {
+      if (e.key === "Escape") {
+        taskText.blur();
+      }
       findElement(targetArray, taskBox).title = taskText.value;
     });
 

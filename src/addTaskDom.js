@@ -1,3 +1,5 @@
+import xImage from "../dist/xIcon.png";
+
 export const addTaskDom = () => {
   const tasks = document.querySelector(".tasks");
 
@@ -22,7 +24,7 @@ export const addTaskDom = () => {
   colour.classList.add("colour");
 
   const deleteTask = document.createElement("img");
-  deleteTask.src = "../dist/xIcon.png";
+  deleteTask.src = xImage;
   deleteTask.classList.add("deleteTask");
   taskText.setAttribute("placeholder", "What's your task?");
 

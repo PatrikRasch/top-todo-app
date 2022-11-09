@@ -1,3 +1,5 @@
+import xImage from "../dist/xIcon.png";
+
 import { format, startOfToday } from "date-fns";
 
 export const addTaskDomCalendar = () => {
@@ -31,7 +33,7 @@ export const addTaskDomCalendar = () => {
   colour.classList.add("colour");
 
   const deleteTask = document.createElement("img");
-  deleteTask.src = "../dist/xIcon.png";
+  deleteTask.src = xImage;
   deleteTask.classList.add("deleteTask");
   taskText.setAttribute("placeholder", "What's your task?");
 
