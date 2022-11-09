@@ -148,12 +148,17 @@ export function addTaskName() {
   );
 
   let setAddTask = true;
-  console.log(setAddTask);
 
   projectForm.addEventListener("click", (e) => {
     if (setAddTask === false) {
       removeAllChildNodes(tasks);
     }
+
+    headerTitle.removeAttribute("disabled", "true");
+    headerDescriptionInput.removeAttribute("disabled", "false");
+    headerTitleEdit.classList.add("headerTitleEdit");
+    headerTitleEdit.classList.remove("invisible");
+
     setAddTask = true;
     for (let i = 0; i < projectOptions.childNodes.length; i++) {
       projectOptions.childNodes[i].classList.remove("focused");
@@ -185,6 +190,12 @@ export function addTaskName() {
 
   addProject.addEventListener("click", (e) => {
     setAddTask = true;
+
+    headerTitle.removeAttribute("disabled", "true");
+    headerDescriptionInput.removeAttribute("disabled", "false");
+    headerTitleEdit.classList.add("headerTitleEdit");
+    headerTitleEdit.classList.remove("invisible");
+
     const addProjectDomReturn = addProjectDom();
     const projectForm = addProjectDomReturn[0];
     const projectDelete = addProjectDomReturn[1];
@@ -208,10 +219,8 @@ export function addTaskName() {
     // activeProject = findElement(projectArray, createProject).id;
     // 99 this only works as long as the user doesn't click any of the other projects.
     activeProject = projectArray[projectArray.length - 1].id;
-    console.log(activeProject);
     // Set activeProjectElement to the new project.
     activeProjectElement = projectArray[projectArray.length - 1];
-    console.log(activeProjectElement);
 
     submitProject(
       projectForm,
@@ -241,6 +250,12 @@ export function addTaskName() {
       if (setAddTask === false) {
         removeAllChildNodes(tasks);
       }
+
+      headerTitle.removeAttribute("disabled", "true");
+      headerDescriptionInput.removeAttribute("disabled", "false");
+      headerTitleEdit.classList.add("headerTitleEdit");
+      headerTitleEdit.classList.remove("invisible");
+
       setAddTask = true;
 
       for (let i = 0; i < projectOptions.childNodes.length; i++) {
@@ -267,7 +282,6 @@ export function addTaskName() {
       });
       projectInput.focus();
     });
-    console.table(projectArray);
   });
 
   const taskCheckClicked = (taskCheck, taskBox, taskArray) => {
@@ -285,6 +299,14 @@ export function addTaskName() {
   calendarToday.addEventListener("click", (e) => {
     setAddTask = false;
     removeAllChildNodes(tasks);
+    activeProject = "analkloe";
+    activeProjectElement = "analkloe";
+    headerTitle.value = "Today's Tasks";
+    headerTitle.setAttribute("disabled", "true");
+    headerTitleEdit.classList.remove("headerTitleEdit");
+    headerTitleEdit.classList.add("invisible");
+    headerDescriptionInput.value = "All tasks with today's date, get to completing them!";
+    headerDescriptionInput.setAttribute("disabled", "true");
 
     const todaysDate = format(new Date(), "yyyy-MM-dd");
     dueArray.forEach((arrayItem) => {
@@ -298,21 +320,33 @@ export function addTaskName() {
   calendarWeek.addEventListener("click", (e) => {
     setAddTask = false;
     removeAllChildNodes(tasks);
+    activeProject = "analkloe";
+    activeProjectElement = "analkloe";
+    headerTitle.value = "All Tasks";
+    headerTitle.setAttribute("disabled", "true");
+    headerTitleEdit.classList.remove("headerTitleEdit");
+    headerTitleEdit.classList.add("invisible");
+    headerDescriptionInput.value = "All tasks with a set date";
+    headerDescriptionInput.setAttribute("disabled", "true");
+
+    dueArray.sort(function (a, b) {
+      if (a.dueDate > b.dueDate) return 1;
+      else if (a.dueDate < b.dueDate) return -1;
+      return 0;
+    });
+
     dueArray.forEach((arrayItem) => {
       showTasks(arrayItem, taskCheckClicked, dueArray, tasks, setAddTask);
     });
-    console.log(setAddTask);
   });
 
   const taskFunctionality = (taskCheck, colour, task, deleteTask, taskBox, targetArray, taskText) => {
     taskCheck.addEventListener("click", (e) => {
       taskCheckClicked(taskCheck, taskBox, targetArray);
-      console.table(targetArray);
     });
 
     colour.addEventListener("input", (e) => {
       updateColour(colour, taskBox, targetArray);
-      console.table(targetArray);
     });
 
     task.addEventListener("keyup", (e) => {
@@ -322,7 +356,6 @@ export function addTaskName() {
     // Updates the task's properties in the array.
     task.addEventListener("submit", (e) => {
       taskSubmit(e, targetArray, taskBox, taskText, tasks);
-      console.table(targetArray);
     });
   };
 
@@ -343,7 +376,6 @@ export function addTaskName() {
 
       const dueTask = new DueTask(taskBox.id, taskText.value, taskBox.style.backgroundColor, false, dueInput.value);
       dueArray = [...dueArray, dueTask];
-      console.table(dueArray);
 
       dueForm.addEventListener("click", (e) => {
         dueInput.select();
@@ -395,7 +427,6 @@ export function addTaskName() {
       // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
       deleteTask.addEventListener("click", (e) => {
         taskDelete(taskArray, taskBox, tasks);
-        console.table(targetArray);
       });
     }
   });

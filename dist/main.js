@@ -3290,12 +3290,17 @@ function addTaskName() {
   );
 
   let setAddTask = true;
-  console.log(setAddTask);
 
   _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.addEventListener("click", (e) => {
     if (setAddTask === false) {
       (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_9__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
     }
+
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.removeAttribute("disabled", "true");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.removeAttribute("disabled", "false");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.add("headerTitleEdit");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.remove("invisible");
+
     setAddTask = true;
     for (let i = 0; i < _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes.length; i++) {
       _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[i].classList.remove("focused");
@@ -3327,6 +3332,12 @@ function addTaskName() {
 
   _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.addProject.addEventListener("click", (e) => {
     setAddTask = true;
+
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.removeAttribute("disabled", "true");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.removeAttribute("disabled", "false");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.add("headerTitleEdit");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.remove("invisible");
+
     const addProjectDomReturn = (0,_addProjectDom_js__WEBPACK_IMPORTED_MODULE_1__.addProjectDom)();
     const projectForm = addProjectDomReturn[0];
     const projectDelete = addProjectDomReturn[1];
@@ -3350,10 +3361,8 @@ function addTaskName() {
     // activeProject = findElement(projectArray, createProject).id;
     // 99 this only works as long as the user doesn't click any of the other projects.
     activeProject = projectArray[projectArray.length - 1].id;
-    console.log(activeProject);
     // Set activeProjectElement to the new project.
     activeProjectElement = projectArray[projectArray.length - 1];
-    console.log(activeProjectElement);
 
     (0,_submitProject_js__WEBPACK_IMPORTED_MODULE_7__.submitProject)(
       projectForm,
@@ -3383,6 +3392,12 @@ function addTaskName() {
       if (setAddTask === false) {
         (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_9__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
       }
+
+      _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.removeAttribute("disabled", "true");
+      _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.removeAttribute("disabled", "false");
+      _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.add("headerTitleEdit");
+      _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.remove("invisible");
+
       setAddTask = true;
 
       for (let i = 0; i < _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes.length; i++) {
@@ -3409,7 +3424,6 @@ function addTaskName() {
       });
       projectInput.focus();
     });
-    console.table(projectArray);
   });
 
   const taskCheckClicked = (taskCheck, taskBox, taskArray) => {
@@ -3427,6 +3441,14 @@ function addTaskName() {
   _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.calendarToday.addEventListener("click", (e) => {
     setAddTask = false;
     (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_9__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
+    activeProject = "analkloe";
+    activeProjectElement = "analkloe";
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.value = "Today's Tasks";
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.setAttribute("disabled", "true");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.remove("headerTitleEdit");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.add("invisible");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value = "All tasks with today's date, get to completing them!";
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.setAttribute("disabled", "true");
 
     const todaysDate = (0,date_fns__WEBPACK_IMPORTED_MODULE_15__["default"])(new Date(), "yyyy-MM-dd");
     dueArray.forEach((arrayItem) => {
@@ -3440,21 +3462,33 @@ function addTaskName() {
   _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.calendarWeek.addEventListener("click", (e) => {
     setAddTask = false;
     (0,_removeAllChildNodes_js__WEBPACK_IMPORTED_MODULE_9__.removeAllChildNodes)(_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
+    activeProject = "analkloe";
+    activeProjectElement = "analkloe";
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.value = "All Tasks";
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitle.setAttribute("disabled", "true");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.remove("headerTitleEdit");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.add("invisible");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value = "All tasks with a set date";
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.setAttribute("disabled", "true");
+
+    dueArray.sort(function (a, b) {
+      if (a.dueDate > b.dueDate) return 1;
+      else if (a.dueDate < b.dueDate) return -1;
+      return 0;
+    });
+
     dueArray.forEach((arrayItem) => {
       (0,_showTasks_js__WEBPACK_IMPORTED_MODULE_12__.showTasks)(arrayItem, taskCheckClicked, dueArray, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks, setAddTask);
     });
-    console.log(setAddTask);
   });
 
   const taskFunctionality = (taskCheck, colour, task, deleteTask, taskBox, targetArray, taskText) => {
     taskCheck.addEventListener("click", (e) => {
       taskCheckClicked(taskCheck, taskBox, targetArray);
-      console.table(targetArray);
     });
 
     colour.addEventListener("input", (e) => {
       (0,_updateColour_js__WEBPACK_IMPORTED_MODULE_8__.updateColour)(colour, taskBox, targetArray);
-      console.table(targetArray);
     });
 
     task.addEventListener("keyup", (e) => {
@@ -3464,7 +3498,6 @@ function addTaskName() {
     // Updates the task's properties in the array.
     task.addEventListener("submit", (e) => {
       (0,_taskSubmit_js__WEBPACK_IMPORTED_MODULE_10__.taskSubmit)(e, targetArray, taskBox, taskText, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
-      console.table(targetArray);
     });
   };
 
@@ -3485,7 +3518,6 @@ function addTaskName() {
 
       const dueTask = new DueTask(taskBox.id, taskText.value, taskBox.style.backgroundColor, false, dueInput.value);
       dueArray = [...dueArray, dueTask];
-      console.table(dueArray);
 
       dueForm.addEventListener("click", (e) => {
         dueInput.select();
@@ -3537,7 +3569,6 @@ function addTaskName() {
       // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
       deleteTask.addEventListener("click", (e) => {
         (0,_taskDelete_js__WEBPACK_IMPORTED_MODULE_11__.taskDelete)(taskArray, taskBox, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
-        console.table(targetArray);
       });
     }
   });
