@@ -72,6 +72,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 10px;
 }
 
+.invisible {
+  display: none;
+}
+
 .calendarToday,
 .allTasks,
 .calendarTitle {
@@ -240,7 +244,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 24px;
   border: 2px solid grey;
   display: grid;
-  grid-template-columns: 50px 10fr 120px 40px 50px;
+  grid-template-columns: 50px 10fr 130px 40px 50px;
   align-items: center;
   border-radius: 10px;
   padding-left: 20px;
