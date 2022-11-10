@@ -131,6 +131,7 @@ header.appendChild(headerDescriptionForm);
 export const headerDescriptionInput = document.createElement("input");
 headerDescriptionInput.classList.add("headerDescriptionInput");
 headerDescriptionInput.setAttribute("placeholder", "Project Description");
+headerDescriptionInput.placeholder = "This is where your project description goes!";
 headerDescriptionForm.appendChild(headerDescriptionInput);
 
 export const contentSeparator3 = document.createElement("div");

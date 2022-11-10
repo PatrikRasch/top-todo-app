@@ -92,13 +92,35 @@ export function addTaskName() {
 
   let projectHeaderTitle;
 
+  const taskFunctionality = (taskCheck, colour, task, deleteTask, taskBox, targetArray, taskText) => {
+    taskCheck.addEventListener("click", (e) => {
+      taskCheckClicked(taskCheck, taskBox, targetArray);
+    });
+
+    colour.addEventListener("input", (e) => {
+      updateColour(colour, taskBox, targetArray);
+    });
+
+    task.addEventListener("keyup", (e) => {
+      if (e.key === "Escape") {
+        taskText.blur();
+      }
+      findElement(targetArray, taskBox).title = taskText.value;
+    });
+
+    // Updates the task's properties in the array.
+    task.addEventListener("submit", (e) => {
+      taskSubmit(e, targetArray, taskBox, taskText, tasks);
+    });
+  };
+
   // Creates the initial example project from the CreateProject class.
   const createProject = new CreateProject(
     projectForm.id,
     projectInput.value,
     uuidv4(),
     projectHeaderTitle,
-    headerDescriptionInput.value
+    "This is where your project description goes!"
   );
 
   // Adds the first project to the project array.
@@ -195,6 +217,7 @@ export function addTaskName() {
     headerDescriptionInput.removeAttribute("disabled", "false");
     headerTitleEdit.classList.add("headerTitleEdit");
     headerTitleEdit.classList.remove("invisible");
+    headerDescriptionInput.placeholder = "Description";
 
     const addProjectDomReturn = addProjectDom();
     const projectForm = addProjectDomReturn[0];
@@ -216,11 +239,12 @@ export function addTaskName() {
     projectArray = [...projectArray, createProject];
 
     // Ensures that new tasks are added to the new project that's just been added.
-    // activeProject = findElement(projectArray, createProject).id;
     // 99 this only works as long as the user doesn't click any of the other projects.
     activeProject = projectArray[projectArray.length - 1].id;
+    console.log(activeProject);
     // Set activeProjectElement to the new project.
     activeProjectElement = projectArray[projectArray.length - 1];
+    console.log(activeProjectElement);
 
     submitProject(
       projectForm,
@@ -340,28 +364,6 @@ export function addTaskName() {
     });
   });
 
-  const taskFunctionality = (taskCheck, colour, task, deleteTask, taskBox, targetArray, taskText) => {
-    taskCheck.addEventListener("click", (e) => {
-      taskCheckClicked(taskCheck, taskBox, targetArray);
-    });
-
-    colour.addEventListener("input", (e) => {
-      updateColour(colour, taskBox, targetArray);
-    });
-
-    task.addEventListener("keyup", (e) => {
-      if (e.key === "Escape") {
-        taskText.blur();
-      }
-      findElement(targetArray, taskBox).title = taskText.value;
-    });
-
-    // Updates the task's properties in the array.
-    task.addEventListener("submit", (e) => {
-      taskSubmit(e, targetArray, taskBox, taskText, tasks);
-    });
-  };
-
   addTask.addEventListener("click", (e) => {
     if (setAddTask === false) {
       const addTaskDomCalendarReturn = addTaskDomCalendar();
@@ -433,4 +435,42 @@ export function addTaskName() {
       });
     }
   });
+
+  const exampleTasks = (placeholderValue) => {
+    const addTaskDomReturn = addTaskDom();
+    const taskBox = addTaskDomReturn[0];
+    const taskCheck = addTaskDomReturn[1];
+    const task = addTaskDomReturn[2];
+    const colour = addTaskDomReturn[3];
+    const deleteTask = addTaskDomReturn[4];
+    const taskText = addTaskDomReturn[5];
+    taskText.setAttribute("placeholder", placeholderValue);
+
+    let taskId = uuidv4();
+    taskBox.setAttribute("id", taskId);
+
+    // Sets activeProject based on which project contains the class "focused"
+    for (let i = 0; i < projectOptions.childNodes.length; i++) {
+      if (projectOptions.childNodes[i].classList.contains("focused")) {
+        activeProject = projectOptions.childNodes[i].id;
+      }
+    }
+    // Find the first project from projectArray matching with activeProject.
+    const match = projectArray.find((element) => element.id === activeProject);
+    // The line below sets the projectLink to match the projectArray's taskLink.
+
+    let projectLink = match.taskLink;
+    const createTask = new CreateTask(taskBox.id, placeholderValue, taskBox.style.backgroundColor, false, projectLink);
+    taskArray = [...taskArray, createTask];
+    // taskText.focus();
+    taskFunctionality(taskCheck, colour, task, deleteTask, taskBox, taskArray, taskText);
+    // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
+    deleteTask.addEventListener("click", (e) => {
+      taskDelete(taskArray, taskBox, tasks);
+    });
+  };
+  exampleTasks("These are some example tasks");
+  exampleTasks("Work on The Odin Project");
+  exampleTasks("Cook dinner");
+  exampleTasks("Keep working on The Odin Project");
 }
