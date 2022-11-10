@@ -3813,13 +3813,35 @@ function addTaskName() {
 
   let projectHeaderTitle;
 
+  const taskFunctionality = (taskCheck, colour, task, deleteTask, taskBox, targetArray, taskText) => {
+    taskCheck.addEventListener("click", (e) => {
+      taskCheckClicked(taskCheck, taskBox, targetArray);
+    });
+
+    colour.addEventListener("input", (e) => {
+      (0,_updateColour_js__WEBPACK_IMPORTED_MODULE_8__.updateColour)(colour, taskBox, targetArray);
+    });
+
+    task.addEventListener("keyup", (e) => {
+      if (e.key === "Escape") {
+        taskText.blur();
+      }
+      (0,_findElement_js__WEBPACK_IMPORTED_MODULE_6__.findElement)(targetArray, taskBox).title = taskText.value;
+    });
+
+    // Updates the task's properties in the array.
+    task.addEventListener("submit", (e) => {
+      (0,_taskSubmit_js__WEBPACK_IMPORTED_MODULE_10__.taskSubmit)(e, targetArray, taskBox, taskText, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
+    });
+  };
+
   // Creates the initial example project from the CreateProject class.
   const createProject = new CreateProject(
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectForm.id,
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectInput.value,
     (0,uuid__WEBPACK_IMPORTED_MODULE_14__["default"])(),
     projectHeaderTitle,
-    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.value
+    "This is where your project description goes!"
   );
 
   // Adds the first project to the project array.
@@ -3916,6 +3938,7 @@ function addTaskName() {
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.removeAttribute("disabled", "false");
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.add("headerTitleEdit");
     _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerTitleEdit.classList.remove("invisible");
+    _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.headerDescriptionInput.placeholder = "Description";
 
     const addProjectDomReturn = (0,_addProjectDom_js__WEBPACK_IMPORTED_MODULE_1__.addProjectDom)();
     const projectForm = addProjectDomReturn[0];
@@ -3937,11 +3960,12 @@ function addTaskName() {
     projectArray = [...projectArray, createProject];
 
     // Ensures that new tasks are added to the new project that's just been added.
-    // activeProject = findElement(projectArray, createProject).id;
     // 99 this only works as long as the user doesn't click any of the other projects.
     activeProject = projectArray[projectArray.length - 1].id;
+    console.log(activeProject);
     // Set activeProjectElement to the new project.
     activeProjectElement = projectArray[projectArray.length - 1];
+    console.log(activeProjectElement);
 
     (0,_submitProject_js__WEBPACK_IMPORTED_MODULE_7__.submitProject)(
       projectForm,
@@ -4061,28 +4085,6 @@ function addTaskName() {
     });
   });
 
-  const taskFunctionality = (taskCheck, colour, task, deleteTask, taskBox, targetArray, taskText) => {
-    taskCheck.addEventListener("click", (e) => {
-      taskCheckClicked(taskCheck, taskBox, targetArray);
-    });
-
-    colour.addEventListener("input", (e) => {
-      (0,_updateColour_js__WEBPACK_IMPORTED_MODULE_8__.updateColour)(colour, taskBox, targetArray);
-    });
-
-    task.addEventListener("keyup", (e) => {
-      if (e.key === "Escape") {
-        taskText.blur();
-      }
-      (0,_findElement_js__WEBPACK_IMPORTED_MODULE_6__.findElement)(targetArray, taskBox).title = taskText.value;
-    });
-
-    // Updates the task's properties in the array.
-    task.addEventListener("submit", (e) => {
-      (0,_taskSubmit_js__WEBPACK_IMPORTED_MODULE_10__.taskSubmit)(e, targetArray, taskBox, taskText, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
-    });
-  };
-
   _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.addTask.addEventListener("click", (e) => {
     if (setAddTask === false) {
       const addTaskDomCalendarReturn = (0,_addTaskDomCalendar_js__WEBPACK_IMPORTED_MODULE_3__.addTaskDomCalendar)();
@@ -4154,6 +4156,44 @@ function addTaskName() {
       });
     }
   });
+
+  const exampleTasks = (placeholderValue) => {
+    const addTaskDomReturn = (0,_addTaskDom_js__WEBPACK_IMPORTED_MODULE_2__.addTaskDom)();
+    const taskBox = addTaskDomReturn[0];
+    const taskCheck = addTaskDomReturn[1];
+    const task = addTaskDomReturn[2];
+    const colour = addTaskDomReturn[3];
+    const deleteTask = addTaskDomReturn[4];
+    const taskText = addTaskDomReturn[5];
+    taskText.setAttribute("placeholder", placeholderValue);
+
+    let taskId = (0,uuid__WEBPACK_IMPORTED_MODULE_14__["default"])();
+    taskBox.setAttribute("id", taskId);
+
+    // Sets activeProject based on which project contains the class "focused"
+    for (let i = 0; i < _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes.length; i++) {
+      if (_initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[i].classList.contains("focused")) {
+        activeProject = _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.projectOptions.childNodes[i].id;
+      }
+    }
+    // Find the first project from projectArray matching with activeProject.
+    const match = projectArray.find((element) => element.id === activeProject);
+    // The line below sets the projectLink to match the projectArray's taskLink.
+
+    let projectLink = match.taskLink;
+    const createTask = new CreateTask(taskBox.id, placeholderValue, taskBox.style.backgroundColor, false, projectLink);
+    taskArray = [...taskArray, createTask];
+    // taskText.focus();
+    taskFunctionality(taskCheck, colour, task, deleteTask, taskBox, taskArray, taskText);
+    // Deletes task from the DOM and removes it from the array upon click on delete icon on task.
+    deleteTask.addEventListener("click", (e) => {
+      (0,_taskDelete_js__WEBPACK_IMPORTED_MODULE_11__.taskDelete)(taskArray, taskBox, _initialDom_js__WEBPACK_IMPORTED_MODULE_0__.tasks);
+    });
+  };
+  exampleTasks("These are some example tasks");
+  exampleTasks("Work on The Odin Project");
+  exampleTasks("Cook dinner");
+  exampleTasks("Keep working on The Odin Project");
 }
 
 
@@ -4593,6 +4633,7 @@ header.appendChild(headerDescriptionForm);
 const headerDescriptionInput = document.createElement("input");
 headerDescriptionInput.classList.add("headerDescriptionInput");
 headerDescriptionInput.setAttribute("placeholder", "Project Description");
+headerDescriptionInput.placeholder = "This is where your project description goes!";
 headerDescriptionForm.appendChild(headerDescriptionInput);
 
 const contentSeparator3 = document.createElement("div");
